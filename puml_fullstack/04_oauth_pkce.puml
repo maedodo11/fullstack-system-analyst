@@ -1,4 +1,5 @@
 @startuml 04_oauth_code_pkce
+!pragma layout smetana
 !theme plain
 title OAuth 2.0 Authorization Code + PKCE
 autonumber

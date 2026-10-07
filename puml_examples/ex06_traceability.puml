@@ -1,0 +1,15 @@
+@startuml ex06_traceability
+!pragma layout smetana
+title Матрица трассировки: BR -> FR -> UI -> тест -> коммит
+skinparam defaultFontName "DejaVu Sans"
+usecase "BR-1: рост конверсии\nв запись через промокоды" as BR #LightBlue
+usecase "FR-12: применение промокода\nпри подтверждении брони" as FR #LightGreen
+usecase "UI-7: экран корзины,\nполе «Промокод»" as UI #LightYellow
+usecase "Test-34: Gherkin Scenario Outline\n(Examples: SALE10/EXPIRED/пусто)" as T #Plum
+usecase "PR-118: commit promo.apply()" as C #Salmon
+BR --> FR
+FR --> UI
+FR --> T
+T --> C
+note bottom of BR: Change request «скидка только на первую запись»:\ndiff-анализ по цепочке = затронуты FR-12, UI-7, Test-34
+@enduml

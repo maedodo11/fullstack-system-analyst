@@ -1,0 +1,21 @@
+@startuml m3_09_shared_db
+title Интеграция через шаренную БД (антипаттерн) vs контракт API/события
+!pragma layout smetana
+skinparam defaultFontName "DejaVu Sans"
+rectangle "Антипаттерн: shared database" as BAD #Salmon {
+  database "ОБЩАЯ БД\norders, users…" as SDB
+  rectangle "Сервис Записей\nпишет напрямую\nUPDATE orders SET…" as A1
+  rectangle "Сервис Платежей\nALTER TABLE в обход всех\n(«колонка status»)" as A2
+  A1 --> SDB
+  A2 --> SDB
+}
+note bottom of BAD : Контракт «неизвестный»: падает прод,\nкогда другой сервис меняет схему.\nНет версионирования, нет наблюдаемости.
+rectangle "Правильно: контракт как граница" as GOOD #LightGreen {
+  rectangle "Сервис Записей\n(API-first контракт,\nсобственная схема БД)" as B1
+  queue "events: appointment.*\n(schema registry)" as BUS
+  rectangle "Сервис Платежей\n(своя БД, consumer)" as B2
+  B1 --> BUS : AppointmentPaid.v2
+  BUS --> B2 : подписка
+}
+BAD -right-> GOOD : миграция: сначала readonly-\nкопии запросов → события → убрать прямой доступ
+@enduml

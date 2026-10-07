@@ -1,0 +1,17 @@
+@startuml ex03_invest_spidr
+!pragma layout smetana
+title Декомпозиция user story: INVEST как чеклист, SPIDR как приём
+skinparam defaultFontName "DejaVu Sans"
+usecase "Эпик: «Онлайн-запись к врачу»" as EPIC #LightBlue
+usecase "Story: выбрать specialty\nи дату (S — small)" as A #LightGreen
+usecase "Story: записаться\n(Paths: слот есть / нет)" as B #LightGreen
+usecase "Story: отменить запись\n(Repeat: повторная запись)" as C #LightGreen
+usecase "Story: напоминание SMS\n(Resources: SMS vs push)" as D #LightGreen
+EPIC --> A
+EPIC --> B
+EPIC --> C
+EPIC --> D
+legend right
+SPIDR: **S**imple | **P**aths | **I**terative | **D**ivisible | **R**epeatable
+endlegend
+@enduml

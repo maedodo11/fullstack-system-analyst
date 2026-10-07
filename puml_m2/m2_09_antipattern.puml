@@ -1,0 +1,25 @@
+@startuml m2_09_antipattern
+title Антипаттерн: одна диаграмма пытается быть всем сразу (было → стало)
+!pragma layout smetana
+skinparam defaultFontName "DejaVu Sans"
+rectangle "БЫЛО: «Универсальная схема»" #Salmon {
+  actor "Менеджер" as M
+  usecase "Заказ" as Z
+  database "Oracle" as O
+  node "K8s" as K
+  component "Billing" as BL
+  M --> Z
+  Z --> O
+  O .. K
+  K --> BL
+}
+rectangle "СТАЛО: три диаграммы, три вопроса" #LightGreen {
+  rectangle "Use Case:\nКТО что делает" as A1
+  rectangle "Sequence:\nКАК идёт вызов" as A2
+  rectangle "Deployment:\nГДЕ живёт" as A3
+  A1 -[hidden]right- A2
+  A2 -[hidden]right- A3
+}
+M -right-> A1 : рефакторинг\nмодели
+note bottom of A3 : Правило: если на диаграмме смешаны актёры,\nтаблицы и ноды — её нельзя прочитать за 30 секунд
+@enduml

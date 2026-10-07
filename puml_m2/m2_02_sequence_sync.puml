@@ -1,0 +1,23 @@
+@startuml m2_02_sequence_sync
+title Sequence: синхронный платёж с alt/опциями и таймаутом эквайринга
+!pragma layout smetana
+skinparam defaultFontName "DejaVu Sans"
+actor Пациент
+participant "Frontend" as FE
+participant "Booking API" as API
+participant "Эквайринг" as PAY
+Пациент -> FE : «Оплатить визит»
+FE -> API : POST /payments (Idempotency-Key)
+API -> PAY : charge(card)
+alt #LightGreen успех
+  PAY --> API : approved(txn_id)
+  API --> FE : 200 paid
+else #Salmon отказ
+  PAY --> API : declined(code)
+  API --> FE : 402 payment_required
+else #Orange таймаут (> 10 c)
+  PAY --x API : timeout
+  API --> FE : 202 status=processing
+  note right of API : НЕ повторять charge!\nрезультат уточняется webhook'ом\nили poll-job'ом
+end
+@enduml

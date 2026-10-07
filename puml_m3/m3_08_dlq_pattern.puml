@@ -1,0 +1,27 @@
+@startuml m3_08_dlq_pattern
+title Обработка «ядовитого» сообщения: retries → DLQ → алерт → реплей
+!pragma layout smetana
+skinparam defaultFontName "DejaVu Sans"
+queue "topic: payments" as T
+participant "Consumer" as CS
+database "retry-topic\n(max 5 попыток,\nbackoff 10s→1m→5m)" as R
+queue "DLQ: payments.dead" as D
+actor "Дежурный" as OP
+T -> CS : deserialize + handle
+alt успех
+  CS --> T : ack
+else временный сбой (БД упала)
+  CS -> R : nack → retry #n
+  R -> CS : redelivery
+else десериализация падает (bad schema)
+  CS -> D : после 5-й попытки → DLQ
+  D -> OP : алерт: рост DLQ > 0
+  OP -> OP : починить consumer /\nисправить payload
+  OP -> T : реплей из DLQ (dry-run!)
+end
+note over CS
+  Антипаттерн: infinite redelivery loop —
+  consumer падает на том же сообщении
+  и блокирует всю партицию.
+end note
+@enduml

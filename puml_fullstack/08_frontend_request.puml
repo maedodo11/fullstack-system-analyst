@@ -1,4 +1,5 @@
 @startuml 08_webapp_request_flow
+!pragma layout smetana
 !theme plain
 title Полный путь действия пользователя: браузер -> API -> БД
 autonumber

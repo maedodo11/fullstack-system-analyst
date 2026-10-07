@@ -1,0 +1,26 @@
+@startuml m3_04_protocol_choice
+title Decision-диаграмма: REST / gRPC / GraphQL / SOAP — что выбрать
+!pragma layout smetana
+skinparam defaultFontName "DejaVu Sans"
+start
+:Кто потребитель API?;
+if (Публичный партнёр /\nвеб без жёсткой схемы?) then (да)
+  :REST/JSON + OpenAPI;
+  note right: curl-отладка, кеширование CDN,\nверсионирование /v1/
+elseif (Внутренний service-to-service,\nвысокая нагрузка?) then (да)
+  if (Нужны стримы / низкая латентность?) then (да)
+    :gRPC (HTTP/2 + protobuf);
+    note right: типизация, кодоген,\ndeadline propagation
+  else (нет)
+    :REST внутри сети или gRPC;\nшлюз конвертирует для внешних;
+  endif
+elseif (Мобильный BFF: клиент сам\nхочет выборку полей?) then (да)
+  :GraphQL;
+  note right: ОГРАНИЧИТЬ глубину/стоимость запроса,\nрешать N+1 через dataloader
+else (банк/госка, WS-*)
+  :SOAP/XML + WSDL;
+  note right: контракты, WS-Security, транзакции
+endif
+:Зафиксировать контракт в репозитории\n+ договориться о таймаутах и ретраях;
+stop
+@enduml

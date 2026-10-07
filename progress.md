@@ -15,9 +15,9 @@
 
 ### Модули
 
-- [ ] **01 Требования и аналитика** — BR/UR/FR/NFR, INVEST, Gherkin, трассировка · Практика: ☐ · Мини-кейс: ☐
-- [ ] **02 UML и BPMN** — Use Case, Sequence, State Machine, ER, BPMN · Практика: ☐ · Мини-кейс: ☐
-- [ ] **03 Интеграции и API** — REST/gRPC/GraphQL, OpenAPI, идемпотентность, webhooks · Практика: ☐ · Мини-кейс: ☐
+- [ ] **01 Требования и аналитика** — BR/UR/FR/NFR, EARS, INVEST+SPIDR, Gherkin, MoSCoW/Kano, change control, трассировка · Практика: ☐ · Мини-кейс: ☐
+- [ ] **02 UML и BPMN** — Use Case, Sequence, State Machine, ER, BPMN, Component/Deployment + 10 разобранных примеров · Практика: ☐ · Мини-кейс: ☐
+- [ ] **03 Интеграции и API** — REST/gRPC/GraphQL, OpenAPI, идемпотентность, webhooks, таймауты/DLQ, sunset (10 примеров с разбором) · Практика: ☐ · Мини-кейс: ☐
 - [ ] **04 Базы данных и SQL** — нормализация, SQL, индексы, NoSQL, миграции · Практика: ☐ · Мини-кейс: ☐
 - [ ] **05 Архитектура** — стили, SLA, CAP/BASE, Saga/CQRS/Outbox, ADR · Практика: ☐ · Мини-кейс: ☐
 - [ ] **06 Безопасность** — OAuth2/PKCE, JWT, RBAC, OWASP, STRIDE · Практика: ☐ · Мини-кейс: ☐

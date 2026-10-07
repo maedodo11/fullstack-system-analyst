@@ -1,0 +1,12 @@
+@startuml ex10_antipatterns
+!pragma layout smetana
+title Антипаттерны требований и как их чинить
+skinparam defaultFontName "DejaVu Sans"
+rectangle "**Требование-решение**\nбыло: «Сделать выпадающий список»\nстало: «Пользователь выбирает врача из списка доступных»" as M1 #Salmon
+rectangle "**Неизмеримая NFR**\nбыло: «должно быть быстро»\nстало: P95 <= 300 мс при 500 RPS" as M2 #Salmon
+rectangle "**Golden hammer**\nбыло: «всё на микросервисах»\nстало: ADR — стиль под NFR и размер команды" as M3 #Salmon
+rectangle "**Скрытые допущения**\nбыло: «оплата картой» (а наличные?)\nстало: явный список допущений + sign-off" as M4 #Salmon
+M1 -[hidden]right- M2
+M3 -[hidden]right- M4
+M1 -[hidden]down- M3
+@enduml

@@ -1,4 +1,5 @@
 @startuml
+!pragma layout smetana
 skinparam defaultFontName "DejaVu Sans"
 skinparam dpi 200
 skinparam rectangle {

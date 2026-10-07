@@ -1,0 +1,13 @@
+@startuml ex07_dor_dod
+!pragma layout smetana
+title Жизненный цикл истории: DoR (вход в спринт) -> DoD (выход из спринта)
+skinparam defaultFontName "DejaVu Sans"
+state "Backlog" as BL
+state "Ready (DoR выполнен)" as RDY #LightBlue : AC/Gherkin написаны\nзависимости сняты\nUX-макет утверждён\nоценка поставлена
+state "In Sprint" as IN
+state "Done (DoD выполнен)" as DN #LightGreen : код + review\nтесты зелёные\nмиграция накатана на staging\nдокументация обновлена
+BL --> RDY : refinement
+RDY --> IN : commitment
+IN --> DN : verification
+DN --> BL : release
+@enduml

@@ -1,0 +1,32 @@
+@startuml m2_03_activity_bpmn
+title Activity/BPMN: возврат средств за отменённый визит (дорожки + шлюзы + события)
+!pragma layout smetana
+skinparam defaultFontName "DejaVu Sans"
+|#LightBlue|Пациент|
+start
+:Запрашивает возврат;
+|#PaleGreen|Система записи|
+if (Визит был оплачен?) then (нет)
+  :Отказать (409);
+  kill
+else (да)
+  if (Срок возврата ≤ 14 дней?) then (да)
+    :Создать RefundRequest;
+  else (нет)
+    #LightYellow:Регистратура: ручное решение\n(таймер-событие: эскалация через 3 дня);
+    note right
+      В BPMN это промежуточное
+      таймер-событие на задаче
+      + boundary timer
+    end note
+    if (Одобрено?) then (да)
+      :Создать RefundRequest;
+    else (нет)
+      stop
+    endif
+  endif
+endif
+|#Lavender|Банк|
+:Провести возврат на карту;
+stop
+@enduml

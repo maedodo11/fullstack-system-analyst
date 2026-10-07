@@ -1,0 +1,20 @@
+@startuml m3_03_openapi_lifecycle
+title OpenAPI как код: контракт живёт в git и конвейере, а не в Confluence
+!pragma layout smetana
+skinparam defaultFontName "DejaVu Sans"
+state "openapi.yaml в PR" as SPEC
+state "CI: spectral lint\n(стайл, breaking rules)" as LINT
+state "CI: diff v1 vs v2\nbreaking change detector" as DIFF
+state "Mock-сервер для фронта\n(pastest/prism)" as MOCK
+state "Контрактные тесты\n(Dredd/Pact)" as TEST
+state "SDK-кодоген\n(openapi-generator)" as SDK
+state "Prod (back-compat!" as PROD
+SPEC --> LINT
+LINT --> DIFF : errors → блок merge
+DIFF --> MOCK : green → автодеплой мока
+MOCK --> TEST
+TEST --> SDK
+SDK --> PROD
+PROD --> SPEC : инцидент/фича → новый PR
+note right of DIFF : Удаление поля / смена типа = breaking.\nРазрешено: новые опциональные поля.
+@enduml

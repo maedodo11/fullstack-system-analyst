@@ -1,4 +1,5 @@
 @startuml 06_test_pyramid
+!pragma layout smetana
 !theme plain
 title Пирамида тестов и зона ответственности аналитика
 rectangle "        **E2E / UAT**\nсквозные сценарии: регистрация -> заказ -> оплата\nмедленно, хрупко | ~10%\nАналитик: сценарии и критерии приёмки" as E2E #FFD6A5

@@ -1,10 +1,1 @@
-# Compressed files
-*.tar.gznode_modules/
-.next/
-dist/
-build/
-*.log
-node_modules/
-
-# Archives
-*.tar.gz
+(empty)

@@ -1,0 +1,24 @@
+@startuml m2_01_usecase
+title Use Case: «Онлайн-запись к врачу» — границы системы и скоуп
+!pragma layout smetana
+skinparam defaultFontName "DejaVu Sans"
+left to right direction
+actor "Пациент" as P
+actor "Регистратура" as R
+actor "SMS-шлюз" as S #LightGray
+rectangle "Система записи" {
+  usecase "Найти врача\nпо фильтру" as UC1
+  usecase "Записаться\nна приём" as UC2
+  usecase "Отменить\nзапись" as UC3
+  usecase "Подтвердить визит\nпо SMS" as UC4
+  usecase "Управлять\nрасписанием" as UC5
+}
+P --> UC1
+P --> UC2
+P --> UC3
+R --> UC5
+R ..> UC3 : <<extend>>
+UC2 ..> UC4 : <<include>>
+S --> UC4
+note bottom of UC2: <<include>> = обязательный шаг (всегда)\n<<extend>> = опциональный (при условии)
+@enduml

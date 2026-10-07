@@ -1,0 +1,16 @@
+@startuml ex09_five_why
+!pragma layout smetana
+title elicitation: техника «5 Почему» — от симптома к корневому требованию
+skinparam defaultFontName "DejaVu Sans"
+rectangle "Симптом: «Клиенты не доходят до врача»" as S0 #Salmon
+rectangle "Почему 1: приходят без напоминания" as S1
+rectangle "Почему 2: напоминаний нет" as S2
+rectangle "Почему 3: канал SMS не подключён" as S3
+rectangle "Почему 4: нет бюджета на SMS-шлюз" as S4
+rectangle "**Корень -> требование:**\npush-напоминания через существующее\nмобильное приложение (без новых затрат)" as R #LightGreen
+S0 --> S1
+S1 --> S2
+S2 --> S3
+S3 --> S4
+S4 --> R
+@enduml

@@ -12,6 +12,14 @@
 | user story | пользовательская история | «Как X, я хочу Y, чтобы Z» |
 | definition of ready (DoR) | готовность к разработке | чеклист перед взятием в спринт |
 | definition of done (DoD) | определение завершённости | критерии приёмки задачи командой |
+| EARS (Easy Approach to Requirements Syntax) | формальный шаблон формулировки требований | 5 шаблонов: Ubiquitous / When / While / If / Where, см. модуль 1 |
+| SPIDR | паттерн декомпозиции эпиков | Simple · Path · Inclusive-exclusive · Divide · Repeatable-across |
+| MoSCoW | приоритизация требований | Must / Should / Could / Won't this time |
+| Kano model | классификация ожиданий пользователя | базовые / линейные / wow-свойства |
+| design constraint | ограничение проектирования | не путать с NFR: «только managed Postgres», 152-ФЗ |
+| change control | управление изменениями требований | request → impact analysis → решение → baseline |
+| requirements volatility | волатильность требований | метрика доли изменённых требований после baseline |
+| Dreyfus model of skill acquisition | модель уровня мастерства экспертов | подсказка, как интервьюировать: спрашивать про конкретные случаи, а не правила |
 | backlog refinement / grooming | уточнение бэклога | регулярная проработка задач |
 | traceability matrix | матрица трассировки | цепочка BR → UR → дизайн → тест |
 | out of scope | вне рамок проекта | всегда фиксируйте в спецификации |

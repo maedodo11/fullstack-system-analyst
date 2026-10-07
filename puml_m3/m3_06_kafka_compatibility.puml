@@ -1,0 +1,11 @@
+@startuml m3_06_kafka_compatibility
+title Эволюция события PaymentSucceeded: совместимость версий через Schema Registry
+!pragma layout smetana
+skinparam defaultFontName "DejaVu Sans"
+rectangle "v1 (сегодня)\n{txn_id, amount, currency}" as V1 #LightBlue
+rectangle "v2 (завтра)\n+ fee_amount (nullable, field#4)" as V2 #LightGreen
+rectangle "v3 (запрещено!)\namount → total_amount_minor_units\nrename/type change" as V3 #Salmon
+V1 -right-> V2 : BACKWARD-compatible:\nстарый consumer читает v2\n(новый поле = null/дефолт)
+V2 -right-> V3 : BREAKING:\nреестр схем ОТКАЖЕТ push v3\nв прод-топик
+note bottom of V2 : Правила: только ADD опциональных полей;\nникогда не REWRITE/DELETE/RETYPE.\nПри break — новый топик PaymentSucceeded.v2\n+ параллельная миграция консьюмеров.
+@enduml

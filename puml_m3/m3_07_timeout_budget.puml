@@ -1,0 +1,11 @@
+@startuml m3_07_timeout_budget
+title Бюджет таймаута: как каскад A→B→C убивает SLA клиента (15 мс)
+!pragma layout smetana
+skinparam defaultFontName "DejaVu Sans"
+rectangle "Клиент ждёт ≤ 15 мс\n(SLA шлюза)" as C #LightGray
+rectangle "Антипаттерн:\nGateway timeout 10 мс\n→ Service A timeout 10 мс\n→ Service B timeout 10 мс\nИТОГО худший случай 30 мс" as BAD #Salmon
+rectangle "Правильно (deadline propagation):\nGateway budget 15 мс\n→ отдаёт A deadline 12 мс\n→ A вызывает B c deadline 8 мс\n(резерв на свою работу + сериализацию)" as GOOD #LightGreen
+C -right-> BAD : гарантированные\nкаскадные отвалы
+C -right-> GOOD : каждый знает остаток бюджета\nи вовремя отвечает 504/degraded
+note bottom of GOOD : Хедер X-Request-Deadline передаётся дальше;\npriority-based thread pool: дешёвые запросы\nне тонут в очереди дорогих.
+@enduml

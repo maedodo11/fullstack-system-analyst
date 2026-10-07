@@ -1,0 +1,15 @@
+@startuml m3_10_versioning
+title Версионирование API: additive-evolution vs big-bang v2 (deprecation policy)
+!pragma layout smetana
+skinparam defaultFontName "DejaVu Sans"
+state "v1 (prod)\nвсе клиенты" as V1
+state "v1 + additive поля\nfee_amount?, links?\n(back-compat, без bump версии)" as V1X #LightGreen
+state "v2 в sandbox\nbreaking: pagination cursor,\nrenames" as V2 #LightYellow
+state "Sunset-период\nv1 отвечает + header\nDeprecation/Sunset: date\nметрики: трафик на v1 ↓" as SUN #Orange
+state "v1 отключён\n410 Gone + инструкция" as OFF #Salmon
+V1 --> V1X : мелкие расширения — НЕ версия
+V1X --> V2 : нужен break → новая версия
+V2 --> SUN : GA v2, объявить дату
+SUN --> OFF : все потребители мигрировали\n(проверить по trace-id метрикам)
+note right of SUN : Big-bang «v2 завтра, v1 умер вчера» = сломанные\nклиенты и инцидент. Правило: не менее 6 мес.\nparallel run + миграционная заметка.
+@enduml

@@ -1,0 +1,20 @@
+@startuml m2_07_component
+title Component: микросервисная карта — границы и контракты
+!pragma layout smetana
+skinparam defaultFontName "DejaVu Sans"
+[Web / Mobile] as CLIENT
+component "API Gateway\n(auth, rate-limit)" as GW
+component "Booking Service\nзаписи, слоты" as BS #LightGreen
+component "Payment Service\nплатежи, возвраты" as PS #LightBlue
+component "Notify Service\nSMS/Push" as NS #LightYellow
+database "Postgres:\nbookings" as DBB
+queue "Kafka" as K
+CLIENT --> GW : REST/JSON
+GW --> BS : gRPC
+BS ..> K : OrderCreated (async)
+K ..> PS : consume
+PS ..> K : PaymentSucceeded
+BS --> DBB
+NS ..> K : consume (все события)
+note right of BS : Граница сервиса = граница данных:\nу каждого своя БД, чужую не трогает
+@enduml

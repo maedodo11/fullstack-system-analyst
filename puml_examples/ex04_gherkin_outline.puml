@@ -1,0 +1,19 @@
+@startuml ex04_gherkin_outline
+!pragma layout smetana
+title Gherkin: Scenario Outline + Examples (таблица данных вместо дублирования)
+skinparam defaultFontName "DejaVu Sans"
+note as N1 #LightBlue
+Scenario Outline: Применение промокода
+  Given активная бронь на сумму <summa>
+  When  я применяю промокод <code>
+  Then  к списанию равен <itog>
+
+  Examples:
+  | summa | code   | itog |
+  | 1000  | SALE10 | 900  |
+  | 1000  | EXPIRED| ошибка |
+  | 1000  |        | 1000 |
+end note
+rectangle "Каждая строка Examples = отдельный автотест\n(параметризованный сценарий)" as N2
+N1 -down-> N2
+@enduml

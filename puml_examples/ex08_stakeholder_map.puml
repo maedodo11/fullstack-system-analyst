@@ -1,0 +1,12 @@
+@startuml ex08_stakeholder_map
+!pragma layout smetana
+title Stakeholder map проекта записи: власть x интерес -> тактика коммуникации
+skinparam defaultFontName "DejaVu Sans"
+rectangle "Управление изменениями\n(PMO, owner продукта)" as Q1 #LightBlue
+rectangle "Информировать\n(writers, поддержка)" as Q2 #LightGreen
+rectangle "Держать удовлетворёнными\n(CISO, юристы)" as Q3 #Salmon
+rectangle "Наблюдать\n(внешние вендоры SMS)" as Q4 #LightYellow
+Q1 -[hidden]right- Q3
+Q2 -[hidden]right- Q4
+note left: Ось X: влияние; ось Y: интерес.\nSA согласует интервью-план по квадрантам
+@enduml

@@ -1,4 +1,5 @@
 @startuml 02_api_integration_styles
+!pragma layout smetana
 !theme plain
 skinparam backgroundColor #FEFEFE
 title Выбор стиля интеграции

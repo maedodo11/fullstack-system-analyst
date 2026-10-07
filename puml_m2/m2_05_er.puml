@@ -1,0 +1,35 @@
+@startuml m2_05_er
+title ER: M:N «запись ↔ услуга» через связующую таблицу + кардинальности
+!pragma layout smetana
+skinparam defaultFontName "DejaVu Sans"
+entity Пациент {
+  * patient_id <<UUID>>
+  --
+  fio
+  phone
+}
+entity Запись {
+  * booking_id <<UUID>>
+  --
+  * patient_id <<FK>>
+  * slot_id <<FK>>
+  status
+}
+entity Услуга {
+  * service_id <<UUID>>
+  --
+  name
+  price_current
+}
+entity ЗаписьУслуга {
+  * booking_id <<FK>>
+  * service_id <<FK>>
+  --
+  price_snapshot
+  qty
+}
+Пациент ||--|{ Запись : «1 — 1..*»
+Запись ||--|{ ЗаписьУслуга : дробит на позиции
+Услуга ||--|{ ЗаписьУслуга : «M:N разрешён»
+note bottom of ЗаписьУслуга : Без этой таблицы схема была бы\n«Запись.services UUID[]» — без индексов\nи целостности
+@enduml

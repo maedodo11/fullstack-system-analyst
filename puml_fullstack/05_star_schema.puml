@@ -1,4 +1,5 @@
 @startuml 05_dwh_star_schema
+!pragma layout smetana
 !theme plain
 title Star-schema: fact_sales + измерения (Kimball)
 hide circle

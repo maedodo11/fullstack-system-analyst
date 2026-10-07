@@ -1,4 +1,5 @@
 @startuml 01_requirements_pyramid
+!pragma layout smetana
 !theme plain
 skinparam backgroundColor #FEFEFE
 skinparam defaultFontName "DejaVu Sans"

@@ -1,0 +1,15 @@
+@startuml ex01_ears_pattern
+!pragma layout smetana
+title EARS: 5 грамматических шаблонов формулировки функциональных требований
+skinparam defaultFontName "DejaVu Sans"
+rectangle "**Ubiquitous** (всегда)\nСистема **должна** шифровать PII at rest" as U #LightBlue
+rectangle "**Event (When)**\n**Когда** пользователь вводит валидный промокод,\nсистема должна применить скидку" as W #LightGreen
+rectangle "**State (While)**\n**Пока** статус заказа = «Оплачен»,\nсистема должна разрешать отмену" as S #LightYellow
+rectangle "**Unwanted (If-Then)**\n**Если** платёжный шлюз недоступен,\nто система должна поставить платёж в очередь" as I #Salmon
+rectangle "**Optional (Where)**\n**Где** включена 3DS, система должна\nредиректить на страницу банка" as O #Plum
+U -[hidden]right- W
+W -[hidden]right- S
+S -[hidden]right- I
+I -[hidden]right- O
+note bottom: Ключевые слова When/While/If/Where подсвечивают\nтип требования и упрощают генерацию тестов
+@enduml

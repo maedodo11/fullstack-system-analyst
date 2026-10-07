@@ -1,4 +1,5 @@
 @startuml 03_sequence_checkout
+!pragma layout smetana
 !theme plain
 title Checkout: синхронно vs асинхронно (202 + события)
 autonumber

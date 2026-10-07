@@ -1,0 +1,20 @@
+@startuml m3_02_idempotency
+title Идемпотентность платёжного POST: Idempotency-Key спасает от двойного списания
+!pragma layout smetana
+skinparam defaultFontName "DejaVu Sans"
+actor Пациент
+participant "Frontend" as FE
+participant "Booking API" as API
+database "Idempotency store\n(TTL 24 ч)" as IDEM
+participant "Эквайринг" as PAY
+FE -> API : POST /v1/payments\nIdempotency-Key: 7f3a…
+API -> IDEM : ключ не найден → выполняем
+API -> PAY : charge(1500 ₽)
+PAY --> API : approved(txn=A1)
+API --> FE : 201 {payment_id:P9, status:paid}
+== Сеть «потеряла» ответ, клиент ретраит ==
+FE -> API : POST /v1/payments (тело то же)\nIdempotency-Key: 7f3a… (тот же!)
+API -> IDEM : ключ найден → НЕ исполнять
+API --> FE : 201 {payment_id:P9, status:paid}\n(повтор первого ответа)
+note over PAY : второго charge НЕ было — деньги списаны один раз
+@enduml

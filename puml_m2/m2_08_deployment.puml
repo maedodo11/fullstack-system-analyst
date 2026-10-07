@@ -1,0 +1,19 @@
+@startuml m2_08_deployment
+title Deployment: где физически крутится система (зоны, реплики, порты)
+!pragma layout smetana
+skinparam defaultFontName "DejaVu Sans"
+node "CDN + WAF (edge)" as CDN
+node "K8s cluster (prod, 3 AZ)" {
+  node "Pod: booking x3" as PB
+  node "Pod: payment x3" as PP
+}
+node "Managed Postgres\n(primary + standby, AZ-a/b)" as PG
+node "Kafka cluster (RF=3)" as KF
+node "Эквайринг (SaaS, вне периметра)" as ACQ
+CDN --> PB : 443 HTTPS
+PB --> PP : mTLS 8443
+PB --> PG : 5432
+PP --> ACQ : TLS + mTLS-сертификат
+PB --> KF : produce/consume
+note bottom of PG : Размещение primary/standby по разным AZ —\nэто требование DR (RPO/RTO), а не «архитектурный вкус»
+@enduml

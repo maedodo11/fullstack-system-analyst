@@ -1,4 +1,5 @@
 @startuml 07_cicd_pipeline
+!pragma layout smetana
 !theme plain
 title CI/CD: от PR до прода с canary
 left to right direction
