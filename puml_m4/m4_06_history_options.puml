@@ -1,0 +1,38 @@
+@startuml m4_06_history_options
+!pragma layout smetana
+skinparam dpi 150
+skinparam defaultFontName DejaVu Sans
+title Хранение «истории статусов заказа»: три варианта — сравнение
+
+rectangle "Вариант A: отдельная таблица\norder_status_history(id, order_id FK,\nstatus, changed_by, changed_at)\nappend-only" as A #D5E8D4 {
+}
+rectangle "Плюсы: простые SQL-отчёты,\nиндекс (order_id, changed_at),\nFK-целостность, аудит по строке" as AP #FFFFFF {
+}
+rectangle "Минусы: JOIN при каждом\nчтении карточки; схема правится\nпри добавлении поля" as AM #FFFFFF {
+}
+rectangle "Вариант B: JSONB-колонка\norders.status_log jsonb\n[{from,to,by,at},...]" as B #FFF2CC {
+}
+rectangle "Плюсы: один read карточки без JOIN;\nгибкость полей события" as BP #FFFFFF {
+}
+rectangle "Минусы: GIN-индекс для поиска\nпо истории; атомарное обновление\nвсей колонки (гонки!);\nслабые отчёты" as BM #FFFFFF {
+}
+rectangle "Вариант C: Event Sourcing\nstore только события,\nсостояние = проекция" as C #DAE8FC {
+}
+rectangle "Плюсы: полный аудит, replay,\nвременные срезы «как было 3 дня назад»" as CP #FFFFFF {
+}
+rectangle "Минусы: сложность, schema evolution\nсобытий, снапшоты, обучение команды;\nокупается не на каждом домене" as CM #FFFFFF {
+}
+A -right-> AP
+A -down-> AM
+B -right-> BP
+B -down-> BM
+C -right-> CP
+C -down-> CM
+note bottom of AM
+Рекомендация middle+: начать с A
+(аудит и отчёты важнее красоты);
+B — если история читается всегда
+вместе с заказом; C — только под
+явный бизнес-требование replay.
+end note
+@enduml

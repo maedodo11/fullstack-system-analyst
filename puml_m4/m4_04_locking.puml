@@ -1,0 +1,20 @@
+@startuml m4_04_locking
+!pragma layout smetana
+skinparam dpi 150
+skinparam defaultFontName DejaVu Sans
+title Два лечения Lost Update: пессимистичная vs оптимистичная блокировка
+
+rectangle "Пессимистичная: SELECT ... FOR UPDATE\n1. T1: BEGIN; SELECT balance FROM accounts\n   WHERE id=7 FOR UPDATE; -- строка залочена\n2. T2: SELECT ... FOR UPDATE; -- ЖДЁТ разблокировки\n3. T1: UPDATE balance=30; COMMIT; -- замок снят\n4. T2: видит актуальный 30, пишет -20" as P #DAE8FC {
+}
+rectangle "Оптимистичная: колонка version\n1. T1 и T2 читают пару (balance=100, version=4)\n2. T1: UPDATE SET balance=30, version=5\n   WHERE id=7 AND version=4; -- обновил 1 строку\n3. T2: UPDATE ... WHERE version=4; -- 0 строк!\n4. retry: перечитать (30, v5), пересчитать, повторить" as O #D5E8D4 {
+}
+note bottom of O
+Выбор механизма — это требование NFR целостности:
+FOR UPDATE — короткие транзакции, высокий конфликт
+(оплата счёта). version — редкие конфликты, долгое
+чтение человек-в-контуре (редактирование карточки).
+Оба варианта фиксируются в AC: «повторное списание
+невозможно даже при параллельных запросах».
+end note
+P -right-> O : альтернативы одного решения
+@enduml

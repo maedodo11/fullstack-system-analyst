@@ -1,0 +1,16 @@
+@startuml m4_02_index_explain
+!pragma layout smetana
+skinparam dpi 150
+skinparam defaultFontName DejaVu Sans
+title Индексы и EXPLAIN: разбор медленного запроса (10M строк)
+
+card "Запрос:\nSELECT * FROM users\nWHERE email = 'a@b.co';\nВремя: 4 с" as Q #F8CECC
+card "EXPLAIN ANALYZE\n-> Seq Scan on users\n   rows=9981234 filtered=1\n   cost=0..218741\nНет индекса — читается вся таблица" as E1 #FFF2CC
+card "Лечение:\nCREATE INDEX CONCURRENTLY\n  idx_users_email ON users(email);\nB-tree: равенство и диапазоны,\nNOT NULL уникальность по бизнесу" as F #DAE8FC
+card "Контроль:\nEXPLAIN -> Index Scan using idx_users_email\nrows=1, время 4 с -> 3 мс\nCONCURRENTLY — без блокировки записи" as V #D5E8D4
+Q --> E1 : диагноз
+E1 --> F : план
+F --> V : проверка
+card "Составной индекс (status, created_at):\nработает по ЛЕВОМУ префиксу\nWHERE status=? AND created_at>? — ок\nWHERE created_at>? — НЕ использует\nПравило: колонка фильтра равенства — первой" as CP #E1D5E7
+V ..> CP : вывод
+@enduml

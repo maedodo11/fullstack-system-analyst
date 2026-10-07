@@ -1,0 +1,21 @@
+@startuml m4_09_antipatterns
+!pragma layout smetana
+skinparam dpi 150
+skinparam defaultFontName DejaVu Sans
+title Антипаттерны работы с данными: было -> почему плохо -> стало
+
+rectangle "SELECT * из таблицы на 10M строк\n-> тянем все колонки, index-only scan невозможен\n-> выбираем нужные колонки + LIMIT/keyset" as R1 #F8CECC {
+}
+rectangle "НФ нарушена: tags varchar = 'a,b,c'\n-> LIKE '%b%' вместо индекса, дубли\n-> junction table или массив/GIN" as R2 #F8CECC {
+}
+rectangle "UPDATE без WHERE в проде\n-> одна опечатка = переписана вся таблица\n-> транзакция + SELECT-проверка + review DDL/DML" as R3 #F8CECC {
+}
+rectangle "Индекс на каждую колонку 'авансом'\n->запись проседает, планер путается\n-> индексы под конкретные медленные запросы из pg_stat_statements" as R4 #F8CECC {
+}
+rectangle "Кеш как источник истины\n-> расхождение кеш/БД = «потерянные заказы»\n-> БД истина, Redis — ускоряющий слой, TTL+invalidation" as R5 #F8CECC {
+}
+R1 -[hidden]down-> R2
+R2 -[hidden]down-> R3
+R3 -[hidden]down-> R4
+R4 -[hidden]down-> R5
+@enduml

@@ -1,0 +1,28 @@
+@startuml m4_00_normalization
+!pragma layout smetana
+skinparam dpi 150
+skinparam defaultFontName DejaVu Sans
+skinparam rectangle {
+  BorderColor #555555
+}
+title Нормализация 1НФ → 3НФ на таблице заказов
+
+rectangle "0НФ (денормализованная выгрузка)\norders_flat\n(id, client_name, client_city, product_ids, product_names, qty_list, total)" as Z #F8CECC {
+}
+rectangle "1НФ — атомарность\norder_positions(order_id, product_id, qty)\nубраны списки через запятую" as A #FFF2CC {
+}
+rectangle "2НФ — нет частичных зависимостей\nPK составной (order_id, product_id)\nqty зависит от обеих частей — ок\nproduct_name убрана: зависит только от product_id" as B #DAE8FC {
+}
+rectangle "3НФ — неключевое только от PK\nclients(id, name, city) + orders.client_id FK\nclient_city больше не хранится в заказе\n(или хранится как snapshot на момент оформления)" as C #D5E8D4 {
+}
+Z --> A : разнести повторяющиеся группы
+A --> B : вынести product_name в products
+B --> C : вынести данные клиента в clients
+note right of C
+Денормализация оправдана:
+- отчёты/DWH (star schema)
+- кешированные выборки
+Но нужен механизм актуальности:
+триггеры / материальные вьюхи / ETL
+end note
+@enduml

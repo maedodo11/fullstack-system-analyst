@@ -1,0 +1,20 @@
+@startuml m4_01_sql_windows
+!pragma layout smetana
+skinparam dpi 150
+skinparam defaultFontName DejaVu Sans
+title SQL: агрегат + окно в одном запросе (топ клиентов за квартал)
+
+rectangle "Таблицы\nclients(id, name)\norders(id, client_id, total,\nstatus, created_at)\nсвязь 1:N по client_id" as T #FFFFFF {
+}
+card "Шаг 1. Фильтр, GROUP BY, HAVING\nWHERE created_at >= дата квартала\nAND status = 'paid'\nGROUP BY c.id HAVING SUM(o.total) больше порога" as S1 #FFF2CC
+card "Шаг 2. Окно без сворачивания строк\nROW_NUMBER() OVER (PARTITION BY client_id\nORDER BY created_at) AS pos\nSUM(total) OVER () — общая база для доли" as S2 #DAE8FC
+card "Шаг 3. Оформление результата\nORDER BY revenue DESC\nLIMIT 10 OFFSET 0\nГлубокая пагинация — keyset-фильтр\nпо последней паре (revenue, id)" as S3 #D5E8D4
+T --> S1
+S1 --> S2
+S2 --> S3
+note bottom of S3
+Порядок выполнения логический:
+FROM - WHERE - GROUP BY - HAVING
+- SELECT (окна) - ORDER BY - LIMIT
+end note
+@enduml

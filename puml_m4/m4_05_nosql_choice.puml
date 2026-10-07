@@ -1,0 +1,35 @@
+@startuml m4_05_nosql_choice
+!pragma layout smetana
+skinparam dpi 150
+skinparam defaultFontName DejaVu Sans
+title Decision-диаграмма: какая СУБД под какую модель доступа
+
+start
+:Опишите 2-3 главных запроса\n(что ищем, как часто, объём);
+if (Нужны JOIN, транзакции,\nцелостность, отчёты?) then (да)
+  if (Объём writes > 10k/s и линейное\nмасштабирование без JOIN?) then (да)
+    :Cassandra / column-family\n(телеметрия, события);
+    stop
+  elseif (Полнотекстовый поиск\nи агрегации по логам?) then (да)
+    :Elasticsearch + PostgreSQL\n(не вместо, а в паре);
+    stop
+  elseif (Временные окна,\nOLAP-аналитика метрик?) then (да)
+    :ClickHouse / TimescaleDB;
+    stop
+  else (нет)
+    :PostgreSQL (+JSONB для гибких\nатрибутов — 70% «документных» кейсов);
+    stop
+  endif
+else (нет)
+  if (Гибкая схема, объект целиком\nчитается/пишется одним куском?) then (да)
+    :MongoDB / document\n(карточки, профили);
+    stop
+  elseif (Просто get/set по ключу,\nкеш/сессии/счётчики?) then (да)
+    :Redis / key-value;
+    stop
+  else (нет)
+    :Много обходов связей\n(рекомендации, антифрод)?\n-> Neo4j / graph;
+    stop
+  endif
+endif
+@enduml

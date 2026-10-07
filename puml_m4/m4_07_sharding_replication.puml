@@ -1,0 +1,31 @@
+@startuml m4_07_sharding_replication
+!pragma layout smetana
+skinparam dpi 150
+skinparam defaultFontName DejaVu Sans
+title Масштабирование чтения и записи: репликация vs шардирование
+
+package "Репликация (async/streaming)" #F5F5F5 {
+  node "Primary (write)" as P #DAE8FC
+  node "Replica 1 (read)" as R1 #D5E8D4
+  node "Replica 2 (read)" as R2 #D5E8D4
+  P --> R1 : WAL stream
+  P --> R2 : WAL stream
+}
+note right of R1
+Риск: replication lag -> читатель
+не видит свою запись ("read-your-writes").
+Лечение: после write читать с primary
+или ждать LSN; метрика lag в мониторинге.
+end note
+
+package "Шардирование (partitioning)" #F5F5F5 {
+  node "Shard 1\nclient_id % 4 == 0" as S1 #FFF2CC
+  node "Shard 2\n... == 1" as S2 #FFF2CC
+  node "Shard 3\n... == 2" as S3 #FFF2CC
+  node "Shard 4\n... == 3" as S4 #FFF2CC
+}
+P ..> S1 : writes распределяются
+note bottom of S3
+Выбор шард-ключа = выбор будущих запросов:\nвсе запросы должны содержать client_id.\nКросс-шардные JOIN и глобальные\nуникальности становятся дорогими.\nResharding планировать заранее\n(range-based легче hash-based).
+end note
+@enduml

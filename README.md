@@ -11,7 +11,7 @@
 | 1 | [Требования и аналитика](01_requirements/README.md) | BR/UR/FR/NFR, EARS, INVEST+SPIDR, Gherkin AC, elicitation и качество требований, MoSCoW/Kano, DoR/DoD, change control, трассировка; 11 примеров с диаграммами и пошаговым разбором |
 | 2 | [Моделирование: UML и BPMN](02_uml_bpmn/README.md) | Use Case, Sequence, State Machine, ER, BPMN, Component/Deployment; диаграммы как код; 10 примеров с диаграммами и пошаговым разбором |
 | 3 | [Интеграции и API](03_integration_apis/README.md) | REST/gRPC/GraphQL/SOAP, OpenAPI как код, идемпотентность, webhooks + HMAC, Kafka-совместимость схем, бюджет таймаута, DLQ, версионирование/sunset; 10 примеров с диаграммами и пошаговым разбором |
-| 4 | [Базы данных и SQL](04_databases_sql_nosql/README.md) | Нормализация, SQL-минимум, индексы, транзакции, NoSQL-выбор, миграции |
+| 4 | [Базы данных и SQL](04_databases_sql_nosql/README.md) | Нормализация, SQL-минимум, индексы, транзакции, NoSQL-выбор, миграции; 11 разобранных примеров с диаграммами |
 | 5 | [Архитектура](05_architecture/README.md) | Стили, NFR/SLA-математика, CAP/BASE, паттерны (Saga, CQRS, Outbox), ADR |
 | 6 | [Безопасность и аутентификация](06_security_auth/README.md) | OAuth2/OIDC + PKCE, JWT, RBAC, OWASP Top-10, STRIDE threat modeling |
 | 7 | [Тестирование и качество](07_testing_quality/README.md) | Пирамида тестов, BDD/Gherkin, контрактные тесты, метрики качества, стенды |
