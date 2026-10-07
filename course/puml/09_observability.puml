@@ -1,0 +1,30 @@
+@startuml 09_observability
+skinparam dpi 200
+!theme plain
+skinparam backgroundColor #FFFFFF
+skinparam defaultFontName "DejaVu Sans"
+skinparam shadowing false
+skinparam roundcorner 10
+title Три столпа наблюдаемости
+
+frame "Микросервисы" as MS #ECEFF1 {
+  rectangle "orders" as A #4FC3F7
+  rectangle "payments" as B #81C784
+}
+
+rectangle "**Traces**\nJaeger / Tempo\ntrace-id сквозь сервисы" as TR #FFE082
+rectangle "**Metrics**\nPrometheus + Grafana\nRED: rate, errors, duration" as ME #B39DDB
+rectangle "**Logs**\nLoki / ELK\nструктурные JSON + trace-id" as LO #F48FB1
+
+A --> TR : spans
+B --> TR : spans
+A --> ME : /metrics
+B --> ME : /metrics
+A --> LO : stdout JSON
+B --> LO : stdout JSON
+
+note bottom of LO
+  Связка: alert по метрике -> dashboard ->
+  trace с тем же trace-id -> логи этого запроса.
+end note
+@enduml

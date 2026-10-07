@@ -1,0 +1,29 @@
+@startuml 08_strangler_fig
+skinparam dpi 200
+!theme plain
+skinparam backgroundColor #FFFFFF
+skinparam defaultFontName "DejaVu Sans"
+skinparam shadowing false
+skinparam roundcorner 10
+title Паттерн Strangler Fig: поэтапная миграция
+
+rectangle "API Gateway / Router" as GW #FFB74D
+rectangle "**МОНОЛИТ**\n(остатки)" as M #B0BEC5
+rectangle "Users\nservice" as U #81C784
+rectangle "Orders\nservice" as O #81C784
+rectangle "Catalog\nservice" as C #4FC3F7
+
+GW --> U : /users/** (фаза 1)
+GW --> O : /orders/** (фаза 2)
+GW --> C : /catalog/** (фаза 3)
+GW --> M : всё остальное\n(пока legacy)
+
+U .up.> M : anti-corruption layer:\nданные мигрируют, фасад переключается
+O .up.> M
+C .up.> M
+
+note bottom of M
+  Шаг за шагом новый сервис перехватывает
+  маршрут; монолит тает до нуля без big-bang.
+end note
+@enduml

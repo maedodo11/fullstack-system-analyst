@@ -1,0 +1,29 @@
+@startuml 07_event_driven
+skinparam dpi 200
+!theme plain
+skinparam backgroundColor #FFFFFF
+skinparam defaultFontName "DejaVu Sans"
+skinparam shadowing false
+skinparam roundcorner 10
+title Event-driven: Outbox + брокер + DLQ
+
+rectangle "Orders service" as OS #4FC3F7 {
+  database "orders DB" as ODB
+  rectangle "Outbox table" as OB #FFE082
+}
+queue "Kafka\norder.created" as K #FFF59D
+rectangle "Shipping" as SH #81C784
+rectangle "Email" as EM #81C784
+queue "DLQ\ndead-letter" as DL #E57373
+
+ODB <-- OB : "в одной транзакции:\nзапись заказа + события"
+OB -right-> K : relay (CDC /\npoller) ат-least-once
+K --> SH : consume
+K --> EM : consume
+SH ..> DL : после N ретраев
+
+note bottom of K
+  Идемпотентность консьюмеров (event id)
+  защищает от дублей при redelivery.
+end note
+@enduml

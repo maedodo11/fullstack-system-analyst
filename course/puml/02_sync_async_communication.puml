@@ -1,0 +1,37 @@
+@startuml 02_sync_async_communication
+skinparam dpi 200
+!theme plain
+skinparam backgroundColor #FFFFFF
+skinparam defaultFontName "DejaVu Sans"
+skinparam shadowing false
+skinparam roundcorner 10
+skinparam sequenceMessageAlign center
+
+title Синхронная и асинхронная коммуникация
+
+rectangle "**Синхронно (REST/gRPC)**\nждёт ответ, держит соединение" as SYNC #E3F2FD {
+  rectangle "Gateway" as G1 #4FC3F7
+  rectangle "Orders" as O1 #4FC3F7
+  rectangle "Inventory" as I1 #4FC3F7
+  G1 --> O1 : GET /orders
+  O1 --> I1 : stock check
+}
+
+rectangle "**Асинхронно (брокер)**\nне ждёт, общается событиями" as ASYNC #E8F5E9 {
+  rectangle "Orders" as O2 #81C784
+  queue "Kafka topic:\norder.created" as K #FFE082
+  rectangle "Shipping" as S2 #81C784
+  rectangle "Analytics" as A2 #81C784
+  O2 --> K : publish
+  K --> S2 : subscribe
+  K --> A2 : subscribe
+}
+
+SYNC -right-> ASYNC
+
+note bottom of ASYNC
+  Синхронно: просто, понятные ошибки, но **каскад задержек**.
+  Асинхронно: связность ниже, пики сглаживаются,
+  но нужна идемпотентность и обработка дублей.
+end note
+@enduml

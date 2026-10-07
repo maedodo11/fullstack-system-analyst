@@ -1,0 +1,51 @@
+@startuml 01_monolith_vs_microservices
+skinparam dpi 200
+!theme plain
+skinparam backgroundColor #FFFFFF
+skinparam defaultFontName "DejaVu Sans"
+skinparam roundcorner 12
+skinparam shadowing false
+skinparam ArrowColor #455A64
+skinparam rectangle {
+  BorderThickness 1.5
+}
+
+title Монолит vs Микросервисы
+
+rectangle "**МОНОЛИТ**" as MONO #ECEFF1 {
+  rectangle "UI" as UI #90A4AE
+  rectangle "Бизнес-логика\n(единый код, единый деплой)" as BL #78909C
+  rectangle "Одна база данных" as DB1 #B0BEC5
+  UI -[hidden]-> BL
+  BL -down-> DB1
+  note bottom of MONO
+    + Простой старт, один деплой
+    - Общая сборка, каскадные сбои
+    - Тяжело масштабировать часть
+  end note
+}
+
+rectangle "**МИКРОСЕРВИСЫ**" as MICRO #ECEFF1 {
+  rectangle "Orders\nservice" as O #4FC3F7
+  rectangle "Payments\nservice" as P #81C784
+  rectangle "Users\nservice" as U #FFB74D
+  rectangle "Inventory\nservice" as I #BA68C8
+  rectangle "DB-O" as DO #E1F5FE
+  rectangle "DB-P" as DP #E8F5E9
+  rectangle "DB-U" as DU #FFF3E0
+  rectangle "DB-I" as DI #F3E5F5
+  O --> DO
+  P --> DP
+  U --> DU
+  I --> DI
+  O -right-> P : REST / events
+  O -down-> I : events
+  note bottom of MICRO
+    + Независимые деплои и масштабы
+    + Сбой сервиса не роняет систему
+    - Сложность: сеть, данные, наблюдаемость
+  end note
+}
+
+MONO -right-> MICRO : декомпозиция по границам\nдомена (bounded contexts)
+@enduml

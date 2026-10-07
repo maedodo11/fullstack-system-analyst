@@ -1,0 +1,34 @@
+@startuml 05_saga_orchestration
+skinparam dpi 200
+!theme plain
+skinparam backgroundColor #FFFFFF
+skinparam defaultFontName "DejaVu Sans"
+skinparam shadowing false
+skinparam roundcorner 10
+title Saga с оркестратором: успех и компенсация
+
+rectangle "Saga Orchestrator" as ORCH #4FC3F7
+
+rectangle "1. Create Order\n(Orders svc)" as S1 #81C784
+rectangle "2. Reserve Stock\n(Inventory svc)" as S2 #81C784
+rectangle "3. Charge Payment\n(Payments svc)" as S3 #81C784
+rectangle "C2. Release Stock\n**компенсация**" as C2 #E57373
+rectangle "C3. Refund Payment\n**компенсация**" as C3 #E57373
+
+ORCH --> S1 : cmd
+S1 --> ORCH : done
+ORCH --> S2 : cmd
+S2 --> ORCH : done
+ORCH --> S3 : cmd
+S3 ..> ORCH : **FAIL!**
+
+ORCH ..> C3 : запустить компенсацию
+C3 ..> C2 : затем предыдущую
+C2 ..> ORCH : saga rolled back
+
+note right of ORCH
+  Каждый шаг идемпотентен,
+  состояние саги — в БД оркестратора.
+  Откат = обратный порядок компенсаций.
+end note
+@enduml

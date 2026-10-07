@@ -1,0 +1,37 @@
+@startuml 10_kubernetes
+skinparam dpi 200
+!theme plain
+skinparam backgroundColor #FFFFFF
+skinparam defaultFontName "DejaVu Sans"
+skinparam shadowing false
+skinparam roundcorner 10
+title Деплой микросервисов в Kubernetes
+
+node "K8s Cluster" as K8S #ECEFF1 {
+  node "Worker Node 1" as N1 #E3F2FD {
+    rectangle "Pod: orders x3\n(container + sidecar)" as P1 #4FC3F7
+    rectangle "Pod: users x2" as P2 #81C784
+  }
+  node "Worker Node 2" as N2 #E3F2FD {
+    rectangle "Pod: orders x3\n(другие инстансы)" as P3 #4FC3F7
+    rectangle "Pod: payments x2" as P4 #FFB74D
+  }
+}
+
+rectangle "Deployment\n(replicas, rolling update,\nmaxUnavailable)" as DEP #BA68C8
+rectangle "Service (ClusterIP)\n+ Ingress / LB" as SVC #FFE082
+database "ConfigMap / Secret" as CFG #B0BEC5
+
+DEP -right-> P1 : управляет
+DEP -right-> P3
+SVC -down-> P1 : load balancing\nпо readiness
+SVC -down-> P2
+SVC -down-> P4
+CFG ..> P1 : env / конфиг
+
+note bottom of SVC
+  Liveness restart контейнер,
+  readiness убирает из балансировки.
+  HPA масштабирует Deployment по CPU/RPS.
+end note
+@enduml

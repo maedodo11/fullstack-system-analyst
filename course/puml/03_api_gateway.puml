@@ -1,0 +1,38 @@
+@startuml 03_api_gateway
+skinparam dpi 200
+!theme plain
+skinparam backgroundColor #FFFFFF
+skinparam defaultFontName "DejaVu Sans"
+skinparam shadowing false
+skinparam roundcorner 10
+
+title API Gateway — единая точка входа
+
+left to right direction
+
+actor "Клиент / Браузер" as C
+rectangle "API Gateway" as GW #4FC3F7 {
+  rectangle "Маршрутизация" as R #B3E5FC
+  rectangle "JWT-аутентификация" as A #B3E5FC
+  rectangle "Rate limiting" as L #B3E5FC
+  rectangle "Кеширование / агрегация" as Cch #B3E5FC
+}
+
+collections "Web / Mobile" as W
+rectangle "Orders service" as O #81C784
+rectangle "Users service" as U #81C784
+rectangle "Catalog service" as K #81C784
+rectangle "Auth service" as AU #FFB74D
+
+W --> GW : HTTPS
+GW --> O : /api/orders/**
+GW --> U : /api/users/**
+GW --> K : /api/catalog/**
+GW ..> AU : валидация токена
+
+note bottom of GW
+  Плюс: клиенту виден один адрес.
+  Минус: узкая горловина — gateway
+  сам обязан быть отказоустойчивым.
+end note
+@enduml

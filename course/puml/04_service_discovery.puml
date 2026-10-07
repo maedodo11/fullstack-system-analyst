@@ -1,0 +1,30 @@
+@startuml 04_service_discovery
+skinparam dpi 200
+!theme plain
+skinparam backgroundColor #FFFFFF
+skinparam defaultFontName "DejaVu Sans"
+skinparam shadowing false
+skinparam roundcorner 10
+title Service Discovery и балансировка нагрузки
+
+frame "Сервисы" as SVC #E3F2FD {
+  rectangle "orders-v1\n10.0.1.5:8080" as A #4FC3F7
+  rectangle "orders-v2\n10.0.1.6:8080" as B #4FC3F7
+  rectangle "users\n10.0.2.4:8080" as C #81C784
+}
+
+database "Registry\n(Consul / K8s)" as REG #FFE082
+rectangle "API Gateway /\nклиентский LB" as GW #FFB74D
+
+A -up-> REG : heartbeat\nрегистрация + health check
+B -up-> REG : heartbeat
+C -up-> REG : heartbeat
+GW -right-> REG : lookup("orders")
+GW -down-> A : round-robin
+GW -down-> B : round-robin
+
+note bottom of REG
+  Health checks выкидывают нездоровые
+  инстансы из ротации автоматически.
+end note
+@enduml
