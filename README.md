@@ -29,6 +29,9 @@
 | [cases/](cases/README.md) | 7 мини-кейсов с разборами: конкурентность, webhook-дубли, миграции, privacy |
 | [practice/](practice/README.md) | практикум: 12 заданий + полные решения в `solutions/` |
 | [modules_extra/13_ai_assisted_analysis/](modules_extra/13_ai_assisted_analysis/README.md) | AI-модуль: промпты для аналитика, границы применения LLM |
+| [snippets/](snippets/README.md) | копипаст в спецификации: NFR-формулировки, Gherkin-шаблоны, OpenAPI-фрагменты, SQL для отчётов, чеклисты контрактов |
+| [GLOSSARY.md](GLOSSARY.md) | глоссарий EN → RU: ~90 терминов с комментариями «как правильно по-русски» |
+| [interview.md](interview.md) | 36 вопросов собеседований с эталонными ответами и ловушками + мини-тест самопроверки |
 
 ## Бонус: микросервисы
 
