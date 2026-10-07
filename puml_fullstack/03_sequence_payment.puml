@@ -1,0 +1,23 @@
+@startuml 03_sequence_checkout
+!theme plain
+title Checkout: синхронно vs асинхронно (202 + события)
+autonumber
+actor "Клиент" as C
+participant "API Gateway" as GW
+participant "Order Service" as ORD
+database "PostgreSQL" as DB
+queue "Kafka" as K
+participant "Payment Service" as PAY
+
+C -> GW : POST /v1/orders\n(Idempotency-Key: uuid)
+GW -> ORD : createOrder(jwt)
+ORD -> DB : INSERT order(pending), outbox OrderCreated
+ORD --> GW : 202 {orderId, status: pending}
+GW --> C : 202 Accepted + Location
+K <- ORD : outbox relay -> OrderCreated{orderId}
+PAY <- K : consume OrderCreated
+PAY -> PAY : charge card (external PSP)
+PAY -> K : PaymentSucceeded{orderId}
+ORD <- K : consume -> UPDATE order=paid
+note over C, PAY : Сбой оплаты не блокирует создание заказа;\nстатус — единый источник истины для UI
+@enduml

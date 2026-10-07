@@ -1,0 +1,34 @@
+@startuml 05_dwh_star_schema
+!theme plain
+title Star-schema: fact_sales + измерения (Kimball)
+hide circle
+skinparam linetype ortho
+
+entity "fact_sales" as F #FFE9A8 {
+  * order_id : uuid <<FK>>
+  --
+  * product_key : int <<FK>>
+  * date_key : int <<FK>>
+  * client_key : int <<FK>>
+  qty : int
+  amount_rub : numeric
+}
+entity "dim_product" as P #BDE3C4 {
+  * product_key : int <<PK>>
+  sku, name, category, brand
+  valid_from, valid_to (SCD2)
+}
+entity "dim_date" as D #A8D5F2 {
+  * date_key : int <<PK>>
+  day, week, month, quarter, is_holiday
+}
+entity "dim_client" as C #D8C7F0 {
+  * client_key : int <<PK>>
+  client_id, city, segment
+  valid_from, valid_to (SCD2)
+}
+F }o--|| P
+F }o--|| D
+F }o--|| C
+note right of F : Grain строки факта: один товар в одном заказе за одну дату.\nВсе отчёты = GROUP BY по измерениям.
+@enduml

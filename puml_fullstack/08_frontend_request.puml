@@ -1,0 +1,25 @@
+@startuml 08_webapp_request_flow
+!theme plain
+title Полный путь действия пользователя: браузер -> API -> БД
+autonumber
+actor "Пользователь" as U
+participant "SPA (React)\nReact Query кеш" as FE
+participant "CDN / статика" as CDN
+participant "API Gateway\nrate limit, JWT-check" as GW
+participant "Backend Service" as BE
+database "Redis cache" as RD
+database "PostgreSQL" as PG
+
+U -> FE : клик «Оплатить» (кнопка дизейбл!)
+FE -> GW : POST /v1/payments\nBearer JWT, Idempotency-Key
+GW -> GW : валидация токена, лимит 10 rps/user
+GW -> BE : проксировать
+BE -> PG : SELECT ... FOR UPDATE баланс
+BE -> PG : UPDATE balance (транзакция)
+BE -> RD : invalidate cache user:{id}
+BE --> GW : 200 {payment_id, status}
+GW --> FE : JSON
+FE -> FE : инвалидация query -> рефетч баланса <=1с
+FE --> U : успешный тост + новый баланс
+note over FE : Клиентская валидация = UX;\nсерверная = безопасность. Только сервер решает.
+@enduml

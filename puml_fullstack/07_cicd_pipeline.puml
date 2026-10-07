@@ -1,0 +1,19 @@
+@startuml 07_cicd_pipeline
+!theme plain
+title CI/CD: от PR до прода с canary
+left to right direction
+rectangle "PR\nlint + unit" as A #D8C7F0
+rectangle "Merge -> build\nDocker image (sha)" as B #A8D5F2
+rectangle "deploy stage\nhelm upgrade" as C #BDE3C4
+rectangle "smoke + контрактные\ntests (newman/pact)" as D #BDE3C4
+rectangle "canary 5%\nArgo Rollouts" as E #FFE9A8
+rectangle "prod 100%" as F #FFD6A5
+rectangle "автооткат\nпо метрике ошибок" as R #F2B8B5
+A --> B
+B --> C
+C --> D
+D --> E
+E --> F : SLO в норме
+E --> R : error rate > budget
+R --> C : rollback
+@enduml

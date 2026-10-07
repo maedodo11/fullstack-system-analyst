@@ -1,0 +1,21 @@
+@startuml 01_requirements_pyramid
+!theme plain
+skinparam backgroundColor #FEFEFE
+skinparam defaultFontName "DejaVu Sans"
+skinparam rectangle {
+  RoundCorner 12
+}
+title Уровни требований: от бизнеса к коду
+
+rectangle "**Бизнес-требования (BR)**\nЗАЧЕМ? Конверсия корзины 2% -> 5%" as BR #FFE9A8
+rectangle "**Пользовательские (UR)**\nUser Story: оформить заказ в 3 клика" as UR #FFD6A5
+rectangle "**Функциональные (FR)**\nСистема рассчитывает скидку промокода <=300 мс" as FR #BDE3C4
+rectangle "**Нефункциональные (NFR)**\n99.9% checkout < 500 мс при 1000 RPS, PCI DSS" as NFR #A8D5F2
+rectangle "**Тесты и код**\nGherkin AC -> автотест -> реализация" as T #D8C7F0
+
+BR -down-> UR : декомпозиция
+UR -down-> FR : спецификация
+FR -down-> NFR : ограничения качества
+NFR -down-> T : критерии приёмки
+T -right-> BR : трассировка (matrix)
+@enduml

@@ -1,0 +1,51 @@
+# Модуль 8. DevOps, CI/CD и облака
+
+Аналитик живёт в цикле «требование → код → прод → фидбек». Понимание конвейера позволяет требовать правильное и оценивать сроки.
+
+## Теория
+
+### 1. CI/CD конвейер (GitLab CI пример)
+```yaml
+stages: [lint, test, build, deploy-stage, smoke, deploy-prod]
+unit-test: { stage: test, script: mvn test }
+build-image: { stage: build, script: docker build -t $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA . }
+deploy-stage: { stage: deploy-stage, script: helm upgrade --install app ./chart --namespace stage }
+smoke: { stage: smoke, script: newman run postman/smoke.json -e env/stage.json }
+deploy-prod: { stage: deploy-prod, script: helm upgrade ... --wait, when: manual }
+```
+Разбор: без шага `--wait` + smoke деплой «успешен», а поды CrashLoopBackOff — релиз считается удачным по ошибке.
+
+### 2. Стратегии релизов
+
+![CI/CD pipeline с canary](../images_fullstack/07_cicd_pipeline.png)
+- **Recreate** — простой даунтайм.
+- **Rolling** — K8s по очереди; дефолт.
+- **Blue/Green** — два окружения, переключение балансировщика; мгновенный rollback.
+- **Canary** — 5% трафика → метрики → автопромоут/автооткат (Argo Rollouts, Flagger).
+- **Feature flags** — код в проде выключен; включаете по сегменту/проценту (LaunchDarkly, Unleash). Разбор: флаг с логикой «для beta-группы» оставили в коде на год → технический долг; правило: у флага есть дата удаления в тикете.
+
+### 3. IaC и Kubernetes минимум
+Terraform описывает инфраструктуру кодом (ревьюable, drift detection). K8s объекты: Deployment (реплики), Service (балансировка), Ingress (L7), ConfigMap/Secret (конфиг), HPA (автоскейл по CPU/RPS), PVC (диски). Аналитику достаточно уметь читать topology diagram сервиса и понимать, что «под не готов» = readiness probe падает.
+
+### 4. Мониторинг и алерты (кратко, подробнее в курсе микросервисов)
+Золотые сигналы Google: latency, traffic, errors, saturation. Алерт должен быть actionable: «p99 checkout > 800 мс 5 мин → страница on-call, runbook ссылка». Разбор: 300 алертов в неделю, все игнорируются → alert fatigue; аудит: убрали 80%, добавили SLO-бюджетные алерты.
+
+### 5. Облачные модели
+IaaS (VM, сети) / PaaS (Managed Postgres, App Runner) / FaaS (Lambda). Экономика: steady load → reserved instances; спорадическая → serverless. Lock-in оценка: Terraform снижает, но managed-Kafka ↔ Kafka API совместим частично.
+
+### 6. Gitflow vs Trunk-based
+Trunk-based + feature flags — стандарт для CD (короткие ветки, частые merge). Gitflow — для релизных продуктов с версиями (on-prem поставки). Выбор влияет на требования к тестам и частоте UAT.
+
+## Ссылки
+- GitLab CI docs: https://docs.gitlab.com/ee/ci/
+- Argo Rollouts canary: https://argo-rollouts.readthedocs.io/
+- Terraform best practices: https://www.terraform.io/cloud-docs/architectural-best-practices
+- Google SRE Book (monitoring): https://sre.google/sre-book/monitoring-distributed-systems/
+- Feature Toggles catalog: https://featureflags.io/
+
+## Практика
+- [ ] Опишите pipeline для мобильного BFF: от PR до прода с canary и автоматическим откатом по метрике ошибок.
+- [ ] Составьте чеклист готовности сервиса к прод-эксплуатации (SLO, runbook, алерты, backup, rollback plan).
+- [ ] Для онбординга-фичи спроектируйте rollout: feature flag по компаниям → canary 10% → GA.
+
+Дальше: [Модуль 9 — Frontend для fullstack-аналитика](../09_frontend_web/README.md)

@@ -1,0 +1,20 @@
+@startuml 04_oauth_code_pkce
+!theme plain
+title OAuth 2.0 Authorization Code + PKCE
+autonumber
+actor "Пользователь" as U
+participant "SPA / Mobile" as APP
+participant "Auth Server\n(Keycloak)" as AS
+participant "API" as API
+
+APP -> APP : code_verifier = random,\nchallenge = SHA256(verifier)
+APP -> AS : /authorize?response_type=code&code_challenge=...
+U -> AS : логин + MFA
+AS --> APP : redirect ?code=xyz
+APP -> AS : /token (code + code_verifier)
+AS --> APP : access_token(JWT, 10 мин) + refresh_token
+APP -> API : GET /orders (Bearer JWT)
+API -> API : подпись + exp + aud + scope
+API --> APP : 200 данные
+note right of AS : Без PKCE код можно перехватить\nчерез кастомный redirect на мобильных
+@enduml
