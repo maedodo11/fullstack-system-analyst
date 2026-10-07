@@ -1,0 +1,41 @@
+name: Docs CI
+
+on:
+  push:
+    branches: [master, main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  check-links:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Проверка битых локальных ссылок и путей картинок
+        run: |
+          python3 - <<'EOF'
+          import os, re, glob, sys
+          broken = []
+          for f in glob.glob('**/*.md', recursive=True):
+              d = os.path.dirname(f)
+              text = open(f, encoding='utf-8').read()
+              for m in re.finditer(r'!\[[^\]]*\]\(([^)"\s]+)', text):
+                  p = m.group(1)
+                  if p.startswith(('http', 'mailto', '#')): continue
+                  if not os.path.exists(os.path.normpath(os.path.join(d, p))):
+                      broken.append(f'{f}: IMG {p}')
+              for m in re.finditer(r'(?<!!)\[[^\]]+\]\(([^)"\s]+)', text):
+                  p = m.group(1)
+                  if p.startswith(('http', 'mailto', '#')): continue
+                  path = p.split('#')[0]
+                  if not os.path.exists(os.path.normpath(os.path.join(d, path))):
+                      broken.append(f'{f}: LINK {p}')
+          if broken:
+              print('\n'.join(broken)); sys.exit(1)
+          print('OK: битых локальных ссылок нет')
+          EOF
+      - name: Проверка синтаксиса PlantUML
+        run: |
+          curl -sLO https://github.com/plantuml/plantuml/releases/download/v1.2024.7/plantuml-1.2024.7.jar
+          java -jar plantuml-1.2024.7.jar -tsvg puml_fullstack/*.puml course/puml/*.puml
+          test $(find . -name '*.svg' | wc -l) -ge 18

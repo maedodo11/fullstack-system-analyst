@@ -1,0 +1,49 @@
+@startuml
+skinparam defaultFontName "DejaVu Sans"
+skinparam dpi 200
+skinparam rectangle {
+  BackgroundColor #F5F3EE
+  BorderColor #4A6785
+  FontSize 13
+}
+skinparam package {
+  BackgroundColor #E8EEF7
+  BorderColor #4A6785
+}
+title Карта знаний системного аналитика (модули 01–13)
+
+package "Аналитик" {
+  rectangle "01 Требования" as M1
+  rectangle "02 UML/BPMN" as M2
+  rectangle "06 Security" as M6
+  rectangle "12 Process/Agile" as M12
+}
+package "Интеграции и данные" {
+  rectangle "03 APIs" as M3
+  rectangle "04 SQL/NoSQL" as M4
+  rectangle "11 Data Eng." as M11
+}
+package "Инженерия" {
+  rectangle "05 Architecture" as M5
+  rectangle "07 Testing" as M7
+  rectangle "08 DevOps/CI-CD" as M8
+  rectangle "10 Backend" as M10
+  rectangle "09 Frontend" as M9
+}
+rectangle "13 AI-инструменты" as M13
+
+M1 --> M2
+M2 --> M3
+M3 --> M4
+M4 --> M5
+M5 --> M11
+M3 --> M6
+M5 --> M7
+M7 --> M8
+M8 --> M9
+M9 --> M10
+M1 --> M12
+M13 -up-> M1
+M13 -up-> M2
+M13 -up-> M3
+@enduml

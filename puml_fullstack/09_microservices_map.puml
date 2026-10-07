@@ -1,0 +1,40 @@
+@startuml
+skinparam defaultFontName "DejaVu Sans"
+skinparam dpi 200
+skinparam rectangle {
+  BackgroundColor #F5F3EE
+  BorderColor #4A6785
+  FontSize 13
+}
+skinparam arrow Color #4A6785
+title Карта микросервисных тем курса (бонус-раздел course/)
+
+rectangle "Монолит vs микросервисы\n(урок 01)" as L1
+rectangle "Границы сервисов, DDD\n(урок 02)" as L2
+rectangle "REST/gRPC синхронно\n(урок 03)" as L3
+rectangle "Kafka, outbox, DLQ\n(урок 04)" as L4
+rectangle "API Gateway, BFF\n(урок 05)" as L5
+rectangle "Discovery, LB, mesh\n(урок 06)" as L6
+rectangle "DB per service, CQRS,\nEvent Sourcing (урок 07)" as L7
+rectangle "Saga, компенсации\n(урок 08)" as L8
+rectangle "Circuit breaker, retry,\nbulkhead (урок 09)" as L9
+rectangle "Метрики, логи, трейсы\n(урок 10)" as L10
+rectangle "Docker, K8s, canary\n(урок 11)" as L11
+rectangle "Strangler Fig миграция\n(урок 12)" as L12
+rectangle "Когда НЕ нужны\n(урок 13)" as L13
+
+L1 --> L2
+L2 --> L3
+L2 --> L4
+L3 --> L5
+L4 --> L5
+L5 --> L6
+L2 --> L7
+L7 --> L8
+L4 --> L8
+L3 --> L9
+L9 --> L10
+L6 --> L11
+L11 --> L12
+L1 --> L13
+@enduml

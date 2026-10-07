@@ -86,7 +86,7 @@ CP: двойное списание недопустимо. Для ленты л
 ≤3 шагов, простая логика — хореография (события). Больше шагов / нужен видимый статус и компенсации — оркестратор (state machine). Диаграмма и разбор сбоя посередине — [модуль 5](05_architecture/README.md), [урок 8 бонус-курса](course/lessons/08_saga.md).
 
 **26. Circuit breaker: состояния и переходы?**
-Closed → (failures > порога) Open → (таймер) Half-Open → (успех probe) Closed / (провал) Open. Зачем half-open: дать системе шанс восстановиться без шторма трафика. Схема — [images_fullstack/circuit_breaker.png](images_fullstack/circuit_breaker.png).
+Closed → (failures > порога) Open → (таймер) Half-Open → (успех probe) Closed / (провал) Open. Зачем half-open: дать системе шанс восстановиться без шторма трафика. Схема — [course/images/06_circuit_breaker.png](course/images/06_circuit_breaker.png).
 
 **27. Что попадает в ADR и зачем он аналитику?**
 Контекст, варианты, решение, последствия (включая отрицательные), статус. Чтобы через год не переспоривать решённое и объяснять «почему нельзя просто». Шаблон — [templates/adr.md](templates/adr.md).
