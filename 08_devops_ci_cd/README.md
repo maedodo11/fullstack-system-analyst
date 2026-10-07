@@ -48,4 +48,5 @@ Trunk-based + feature flags — стандарт для CD (короткие в�
 - [ ] Составьте чеклист готовности сервиса к прод-эксплуатации (SLO, runbook, алерты, backup, rollback plan).
 - [ ] Для онбординга-фичи спроектируйте rollout: feature flag по компаниям → canary 10% → GA.
 
+Задание 11 практикума (инцидент): [tasks](../practice/tasks.md) · [разбор](../practice/solutions/sol11_incident.md)
 Дальше: [Модуль 9 — Frontend для fullstack-аналитика](../09_frontend_web/README.md)

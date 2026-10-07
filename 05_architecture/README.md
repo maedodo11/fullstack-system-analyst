@@ -56,4 +56,5 @@ CQRS (разделить чтение/запись), Event Sourcing (источ�
 - [ ] Посчитайте деградацию SLA для цепочки из 4 сервисов по 99.5%. Что менять дешевле всего?
 - [ ] Напишите ADR: PostgreSQL vs MongoDB для каталога товаров с часто меняющимися атрибутами.
 
+Задание 8 практикума: [tasks](../practice/tasks.md) · [образец ADR](../practice/solutions/sol08_adr.md) · шаблоны: [ADR](../templates/adr.md), [NFR-чеклист](../templates/nfr-checklist.md)
 Дальше: [Модуль 6 — Безопасность](../06_security_auth/README.md)

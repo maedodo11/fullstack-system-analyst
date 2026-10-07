@@ -72,4 +72,5 @@ BPMN — язык бизнеса: пулы/дорожки (участники), 
 - [ ] State machine «Доставка»: 8 состояний, минимум 2 терминальных.
 - [ ] BPMN «Онбординг юрлица в банк» с дорожками Клиент/Менеджер/Комплаенс и таймером SLA.
 
+Задания 3–4 практикума: [tasks](../practice/tasks.md) · [разбор sequence](../practice/solutions/sol03_sequence.md), [разбор state machine](../practice/solutions/sol04_statemachine.md)
 Дальше: [Модуль 3 — Интеграции и API](../03_integration_apis/README.md)

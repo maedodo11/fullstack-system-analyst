@@ -58,4 +58,5 @@ BR ↔ FR ↔ тест ↔ код. Матрица трассировки пок�
 - [ ] Напишите 2 сценария Gherkin для перевода между своими счетами (успех + отказ из-за лимита).
 - [ ] Составьте глоссарий из 10 терминов для домена e-commerce.
 
+Задания 1–2 практикума: [tasks](../practice/tasks.md) · [разбор NFR](../practice/solutions/sol01_nfr.md), [разбор INVEST](../practice/solutions/sol02_invest.md)
 Дальше: [Модуль 2 — UML и BPMN](../02_uml_bpmn/README.md)

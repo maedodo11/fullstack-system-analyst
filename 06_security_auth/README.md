@@ -54,4 +54,5 @@ Injection (параметризованные запросы), Broken Access Con
 - [ ] Проведите STRIDE для «загрузки документов пользователем» — минимум 6 угроз с мерами.
 - [ ] Составьте матрицу RBAC для CRM (роли: agent, teamlead, compliance) × 10 операций.
 
+Задание 9 практикума: [tasks](../practice/tasks.md) · [разбор RBAC+JWT](../practice/solutions/sol09_rbac_jwt.md) · шаблон [threat model](../templates/threat-model.md)
 Дальше: [Модуль 7 — Тестирование и качество](../07_testing_quality/README.md)

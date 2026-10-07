@@ -63,4 +63,5 @@ Expand-Contract: добавить nullable-колонку → dual-write → б�
 - [ ] Дано: SELECT тормозит 4 с на 10M строк, фильтр `WHERE email = ?`. Составьте план действий с EXPLAIN и индексом.
 - [ ] Спроектируйте хранение «истории статусов заказа»: отдельная таблица vs JSONB vs Event Sourcing — сравните.
 
+Задания 6–7 практикума: [tasks](../practice/tasks.md) · [разбор SQL](../practice/solutions/sol06_sql.md), [разбор ER](../practice/solutions/sol07_er.md)
 Дальше: [Модуль 5 — Архитектура](../05_architecture/README.md)

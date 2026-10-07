@@ -18,6 +18,17 @@
 | 10 | [Backend-практики](10_backend_practices/README.md) | Слои сервиса, retry/backoff/jitter, конкурентность, кеширование, correlation-id |
 | 11 | [Данные и аналитика](11_data_engineering/README.md) | DWH/Kimball star-schema, ETL/ELT, CDC/streaming, data quality, спецификации отчётов |
 | 12 | [Процессы, Agile и инструменты](12_process_agile_tools/README.md) | Роли, DoR/Definition of Done, тулинг, жизненный цикл артефактов, soft skills |
+| 13 | [AI-assisted analysis](modules_extra/13_ai_assisted_analysis/README.md) | Промпт-плейбук SA, ревью спеков через LLM, privacy-границы применения |
+
+## Навигация по курсу
+
+| Ресурс | Для чего |
+|---|---|
+| [progress.md](progress.md) | трекер прогресса: чеклист модулей, маршруты A/B/C, зачётный проект |
+| [templates/](templates/) | 6 рабочих шаблонов: спецификация ФТ, ADR, контракт интеграции, NFR-чеклист, threat model, декомпозиция и оценка |
+| [cases/](cases/README.md) | 7 мини-кейсов с разборами: конкурентность, webhook-дубли, миграции, privacy |
+| [practice/](practice/README.md) | практикум: 12 заданий + полные решения в `solutions/` |
+| [modules_extra/13_ai_assisted_analysis/](modules_extra/13_ai_assisted_analysis/README.md) | AI-модуль: промпты для аналитика, границы применения LLM |
 
 ## Бонус: микросервисы
 
@@ -25,7 +36,9 @@
 
 ## Итоговый проект (зачёт)
 
-Возьмите домен «сервис записи к врачу» и подготовьте полный пакет аналитики:
+Начинайте с [progress.md](progress.md) — там же маршруты быстрого онбординга и полного прохождения.
+
+Возьмите домен «сервис записи к врачу» и подготовьте полный пакет аналитики (каждый пункт оформляется по соответствующему шаблону из `templates/`):
 1. BR → UR → FR/NFR с метриками (модуль 1).
 2. Use Case + 2 sequence + state machine записи + BPMN «приём пациента» (модуль 2).
 3. OpenAPI-контракт записи с идемпотентностью + схема событий напоминаний (модуль 3).

@@ -47,4 +47,5 @@ Cache-aside (промах → БД → запись в Redis TTL), invalidate п
 - [ ] Посчитайте нужное число реплик сервиса: p95 200 мс, 800 RPS, пул БД 10 коннектов на под.
 - [ ] Составьте требования к correlation-id и формату логов для сквозного поиска по заявке.
 
+Задание 11 практикума + мини-кейсы 2–3: [конкурентность](../cases/case02_double_booking.md), [дубли webhook](../cases/case03_duplicate_webhook.md), [разбор инцидента](../practice/solutions/sol11_incident.md)
 Дальше: [Модуль 11 — Данные и аналитика](../11_data_engineering/README.md)
