@@ -1,7 +1,15 @@
 @startuml m4_09_antipatterns
-!pragma layout smetana
-skinparam dpi 150
-skinparam defaultFontName DejaVu Sans
+skinparam defaultFontName "DejaVu Sans"
+skinparam defaultFontSize 14
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam ArrowColor #334155
+skinparam titleFontColor #0F172A
+skinparam titleFontSize 20
+skinparam noteBackgroundColor #FFF7ED
+skinparam noteBorderColor #D97706
+skinparam dpi 140
 title Антипаттерны работы с данными: было -> почему плохо -> стало
 
 rectangle "SELECT * из таблицы на 10M строк\n-> тянем все колонки, index-only scan невозможен\n-> выбираем нужные колонки + LIMIT/keyset" as R1 #F8CECC {

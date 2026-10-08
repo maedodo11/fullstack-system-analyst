@@ -3,7 +3,7 @@
 **Unit (много, быстрые):** валидация окна записи (нельзя задним числом), расчёт свободных слотов (края: последний день месяца, високосная неделя), правила отмены (>24ч бесплатна, <24ч penalty flag), переходы state machine записи.
 
 **Contract (Pact):**
-- Consumer: веб-клиент → Provider: booking-api (`GET /slots`, `POST /booking`). Провайдер публикует pact, потребитель запускает verification в своём CI.
+- Consumer: веб-клиент → Provider: booking-api (`GET /slots`, `POST /booking`). Потребитель формирует и публикует pact, провайдер выполняет verification в своём CI; перед релизом проверяется совместимость версий.
 - Consumer: booking-api → Provider: doctor-schedule. Особый кейс: пустой список слотов ≠ 404.
 - Async: схема события `booking.reminder.scheduled` (JSON Schema registry + схематесты в CI продюсера).
 

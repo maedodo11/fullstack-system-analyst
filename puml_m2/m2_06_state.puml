@@ -1,17 +1,27 @@
 @startuml m2_06_state
-title State Machine записи на приём: guard-ы, таймеры, терминальные состояния
-!pragma layout smetana
 skinparam defaultFontName "DejaVu Sans"
+skinparam defaultFontSize 14
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam ArrowColor #334155
+skinparam titleFontColor #0F172A
+skinparam titleFontSize 20
+skinparam noteBackgroundColor #FFF7ED
+skinparam noteBorderColor #D97706
+skinparam dpi 140
+title State Machine записи на приём: guard-ы, таймеры, терминальные состояния
 [*] --> Draft
 Draft --> Confirmed : пациент подтвердил\n[guard: слот свободен]
 Draft --> Expired : [таймер 24 ч без подтверждения]
 Confirmed --> Paid : оплата прошла
 Confirmed --> Cancelled : отмена [guard: до 2 ч до визита]
 Paid --> Visited : визит состоялся
-Paid --> Refunded : отмена [guard: ≤14 дней] : возврат
+Paid --> RefundPending : отмена [политика возврата допускает]
+RefundPending --> Refunded : возврат подтверждён
 Visited --> [*]
 Cancelled --> [*]
 Expired --> [*]
 Refunded --> [*]
-note right of Paid : shipped→paid невозможен: переход есть только\nпо стрелкам. shipped→paid в логах = баг или атака
+note right of Paid : Неизвестный исход платежа описывается отдельно.\nВозврат — асинхронная операция, не мгновенный переход.
 @enduml

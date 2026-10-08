@@ -1,26 +1,20 @@
 @startuml m3_04_protocol_choice
-title Decision-диаграмма: REST / gRPC / GraphQL / SOAP — что выбрать
-!pragma layout smetana
 skinparam defaultFontName "DejaVu Sans"
-start
-:Кто потребитель API?;
-if (Публичный партнёр /\nвеб без жёсткой схемы?) then (да)
-  :REST/JSON + OpenAPI;
-  note right: curl-отладка, кеширование CDN,\nверсионирование /v1/
-elseif (Внутренний service-to-service,\nвысокая нагрузка?) then (да)
-  if (Нужны стримы / низкая латентность?) then (да)
-    :gRPC (HTTP/2 + protobuf);
-    note right: типизация, кодоген,\ndeadline propagation
-  else (нет)
-    :REST внутри сети или gRPC;\nшлюз конвертирует для внешних;
-  endif
-elseif (Мобильный BFF: клиент сам\nхочет выборку полей?) then (да)
-  :GraphQL;
-  note right: ОГРАНИЧИТЬ глубину/стоимость запроса,\nрешать N+1 через dataloader
-else (банк/госка, WS-*)
-  :SOAP/XML + WSDL;
-  note right: контракты, WS-Security, транзакции
-endif
-:Зафиксировать контракт в репозитории\n+ договориться о таймаутах и ретраях;
-stop
+skinparam defaultFontSize 14
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam ArrowColor #334155
+skinparam title Протокол интеграции: варианты, не универсальный рецепт
+card "REST / JSON + OpenAPI\nПубличные и внутренние API, стандартная HTTP-семантика\nПроверить ошибки, права, идемпотентность и пагинацию" as R #DAE8FC
+card "gRPC / Protobuf\nТипизированные вызовы и streaming\nПроверить поддержку клиента, deadline и schema evolution" as G #D5E8D4
+card "GraphQL\nВыбор полей и агрегированный доступ\nОграничить стоимость запроса; проверить права и N+1" as Q #FFF2CC
+card "SOAP / XML + WSDL\nКогда партнёрский контракт требует WS-*\nПроверить профиль безопасности и совместимость" as S #E1D5E7
+R -[hidden]down-> G
+G -[hidden]down-> Q
+Q -[hidden]down-> S
+note bottom of S
+Выбор фиксируем в ADR по ограничениям конкретной интеграции.
+Высокая нагрузка сама по себе не доказывает преимущество gRPC.
+end note
 @enduml

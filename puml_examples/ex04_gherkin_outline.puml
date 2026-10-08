@@ -1,7 +1,16 @@
 @startuml ex04_gherkin_outline
-!pragma layout smetana
-title Gherkin: Scenario Outline + Examples (таблица данных вместо дублирования)
 skinparam defaultFontName "DejaVu Sans"
+skinparam defaultFontSize 14
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam ArrowColor #334155
+skinparam titleFontColor #0F172A
+skinparam titleFontSize 20
+skinparam noteBackgroundColor #FFF7ED
+skinparam noteBorderColor #D97706
+skinparam dpi 140
+title Gherkin: Scenario Outline + Examples (таблица данных вместо дублирования)
 note as N1 #LightBlue
 Scenario Outline: Применение промокода
   Given активная бронь на сумму <summa>

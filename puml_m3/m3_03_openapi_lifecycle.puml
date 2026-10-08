@@ -1,7 +1,16 @@
 @startuml m3_03_openapi_lifecycle
-title OpenAPI как код: контракт живёт в git и конвейере, а не в Confluence
-!pragma layout smetana
 skinparam defaultFontName "DejaVu Sans"
+skinparam defaultFontSize 14
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam ArrowColor #334155
+skinparam titleFontColor #0F172A
+skinparam titleFontSize 20
+skinparam noteBackgroundColor #FFF7ED
+skinparam noteBorderColor #D97706
+skinparam dpi 140
+title OpenAPI как код: контракт живёт в git и конвейере, а не в Confluence
 state "openapi.yaml в PR" as SPEC
 state "CI: spectral lint\n(стайл, breaking rules)" as LINT
 state "CI: diff v1 vs v2\nbreaking change detector" as DIFF

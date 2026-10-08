@@ -5,7 +5,10 @@
 [*] --> CREATED : пользователь оформил
 CREATED --> RESERVED : склад зарезервирован
 RESERVED --> PAID : платёж подтверждён (server verify)
-RESERVED --> CANCELLED : таймаут оплаты / отказ / ручная отмена
+RESERVED --> PAYMENT_RECONCILING : таймаут провайдера / результат неизвестен
+PAYMENT_RECONCILING --> PAID : подтверждённый успех
+PAYMENT_RECONCILING --> CANCELLED : подтверждённый отказ + снять резерв
+RESERVED --> CANCELLED : отказ / отмена без активного платежа
 CREATED --> CANCELLED : отмена до резерва
 PAID --> SHIPPED : передан в доставку
 PAID --> REFUND_PENDING : отмена после оплаты
@@ -23,7 +26,10 @@ REFUNDED --> [*]
 |---|---|---|---|---|
 | CREATED | reserve.ok | все позиции в наличии | записать резерв (TTL 15 мин) | RESERVED |
 | RESERVED | pay.confirmed | сумма совпадает, подпись OK | outbox: order.paid | PAID |
-| RESERVED | timeout/cancel | — | release резерва (компенсация Saga) | CANCELLED |
+| RESERVED | provider.timeout | попытка оплаты существует | запустить сверку, не повторять списание | PAYMENT_RECONCILING |
+| PAYMENT_RECONCILING | pay.confirmed | проверены операция и сумма | outbox: order.paid | PAID |
+| PAYMENT_RECONCILING | pay.failed | окончательный отказ подтверждён | снять резерв | CANCELLED |
+| RESERVED | cancel | активного платежа нет | снять резерв | CANCELLED |
 | PAID | cancel | не передан в доставку | создать refund task (компенсация) | REFUND_PENDING |
 | REFUND_PENDING | refund.done | провайдер подтвердил возврат | outbox: order.refunded | REFUNDED |
 

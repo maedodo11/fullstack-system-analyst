@@ -13,6 +13,7 @@ entity DishOption { *id PK; *dish_id FK; name; price_delta }
 entity DishPriceHistory {
   *dish_id FK
   *valid_from
+  valid_to
   price
 }
 entity Customer { *id PK; name; phone }
@@ -24,7 +25,7 @@ entity Order {
   status
   total
 }
-entity OrderItem { *order_id PK,FK; *dish_id FK; qty; unit_price }
+entity OrderItem { *id PK; *order_id FK; *dish_id FK; qty; unit_price }
 entity Courier { *id PK; name }
 entity Delivery { *id PK; *order_id FK 1:1; *courier_id FK; eta; status }
 
@@ -45,6 +46,6 @@ Courier ||--o{ Delivery
 Ключевые решения:
 - **OrderItem.unit_price** — снимок цены на момент заказа (неизменяем): пересчёт задним числом ломает чеки и бухгалтерию. История цен — DishPriceHistory (valid_from/valid_to), паттерн SCD2.
 - **Order.address_id + snapshot-поля адреса** — адрес клиента мог измениться после заказа, аналогично.
-- Слабые сущности: Category/DishOption идентифицируются частично родителем (composite key restaurant_id+name).
+- Category/DishOption здесь имеют самостоятельный id; FK задаёт владельца. Если имя должно быть уникально у родителя, добавьте UNIQUE(parent_id, name). OrderItem имеет собственный id, иначе PK только по order_id разрешил бы лишь одну позицию заказа.
 - Delivery отдельно от Order: courier/eta меняются после создания заказа; связь 1:1, но свой жизненный цикл.
 - Many-to-many dish↔option — через выбор в корзине (OrderItemOption при необходимости).

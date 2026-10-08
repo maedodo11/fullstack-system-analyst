@@ -1,17 +1,26 @@
 @startuml m2_10_plantuml_vs_mermaid
-title Выбор инструмента моделирования: кто читатель диаграммы?
-!pragma layout smetana
 skinparam defaultFontName "DejaVu Sans"
+skinparam defaultFontSize 14
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam ArrowColor #334155
+skinparam titleFontColor #0F172A
+skinparam titleFontSize 20
+skinparam noteBackgroundColor #FFF7ED
+skinparam noteBorderColor #D97706
+skinparam dpi 140
+title Выбор инструмента моделирования: кто читатель диаграммы?
 start
 :Нужна диаграмма;
 if (Читатель — разработчик,\nдиаграмма живёт в PR/repo?) then (да)
   if (Нужен полный UML\n(class/state/component) и CI-рендер?) then (да)
     #LightBlue:PlantUML: код → диаграмма\ndiff в git, рендер в пайплайне;
   else (нет)
-    #LightGreen:Mermaid: блок кода прямо в README\(GitHub/GitLab рендерят сами);
+    #LightGreen:Mermaid: блок кода прямо в README\n(GitHub/GitLab рендерят сами);
   endif
 else (нет)
-  #LightYellow:draw.io / Camunda Modeler:\BPMN-пулы и дорожки для заказчиков\экспорт в PNG/SVG для презентации;
+  #LightYellow:draw.io / Camunda Modeler:\nBPMN-пулы и дорожки для заказчиков\nэкспорт в PNG/SVG для презентации;
 endif
 :Подпись «что проверяем по этой схеме»;
 stop

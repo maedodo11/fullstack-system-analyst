@@ -1,15 +1,24 @@
 @startuml m3_02_idempotency
-title Идемпотентность платёжного POST: Idempotency-Key спасает от двойного списания
-!pragma layout smetana
 skinparam defaultFontName "DejaVu Sans"
+skinparam defaultFontSize 14
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam ArrowColor #334155
+skinparam titleFontColor #0F172A
+skinparam titleFontSize 20
+skinparam noteBackgroundColor #FFF7ED
+skinparam noteBorderColor #D97706
+skinparam dpi 140
+title Идемпотентность платёжного POST: Idempotency-Key спасает от двойного списания
 actor Пациент
 participant "Frontend" as FE
 participant "Booking API" as API
 database "Idempotency store\n(TTL 24 ч)" as IDEM
 participant "Эквайринг" as PAY
 FE -> API : POST /v1/payments\nIdempotency-Key: 7f3a…
-API -> IDEM : ключ не найден → выполняем
-API -> PAY : charge(1500 ₽)
+API -> IDEM : атомарно занять ключ + hash запроса\n(UNIQUE client_id, operation, key)
+API -> PAY : charge(1500 ₽, provider_operation_key)
 PAY --> API : approved(txn=A1)
 API --> FE : 201 {payment_id:P9, status:paid}
 == Сеть «потеряла» ответ, клиент ретраит ==

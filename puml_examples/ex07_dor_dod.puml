@@ -1,7 +1,16 @@
 @startuml ex07_dor_dod
-!pragma layout smetana
-title Жизненный цикл истории: DoR (вход в спринт) -> DoD (выход из спринта)
 skinparam defaultFontName "DejaVu Sans"
+skinparam defaultFontSize 14
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam ArrowColor #334155
+skinparam titleFontColor #0F172A
+skinparam titleFontSize 20
+skinparam noteBackgroundColor #FFF7ED
+skinparam noteBorderColor #D97706
+skinparam dpi 140
+title Жизненный цикл истории: DoR (вход в спринт) -> DoD (выход из спринта)
 state "Backlog" as BL
 state "Ready (DoR выполнен)" as RDY #LightBlue : AC/Gherkin написаны\nзависимости сняты\nUX-макет утверждён\nоценка поставлена
 state "In Sprint" as IN

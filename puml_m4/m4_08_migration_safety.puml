@@ -1,17 +1,25 @@
 @startuml m4_08_migration_safety
-!pragma layout smetana
-skinparam dpi 150
-skinparam defaultFontName DejaVu Sans
+skinparam defaultFontName "DejaVu Sans"
+skinparam defaultFontSize 14
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam ArrowColor #334155
+skinparam titleFontColor #0F172A
+skinparam titleFontSize 20
+skinparam noteBackgroundColor #FFF7ED
+skinparam noteBorderColor #D97706
+skinparam dpi 140
 title Expand-Contract миграция схемы: безопасный путь против DROP COLUMN в один деплой
 
 |Expand|
 start
-:V1: ADD COLUMN status_new text NULL;\n(без переписывания строк, быстро);
+:V1: ADD COLUMN status_new text NULL;\n(без переписывания строк; учитывать DDL lock);
 :V2: dual-write: код пишет status и status_new;
 :V3: бэкфилл пачками по 10k\n(LIMIT-цикл, чтобы не держать long tx);
 :V4: переключить чтение на status_new;\nнаблюдать метрики;
 |Contract|
-:V5: остановить write в status (старый код скачан);\nALTER ... DROP COLUMN status — отдельным релизом;
+:V5: остановить write в status (старый код выведен);\nALTER ... DROP COLUMN status — отдельным релизом;
 stop
 note right
 Антипаттерн слева внизу:

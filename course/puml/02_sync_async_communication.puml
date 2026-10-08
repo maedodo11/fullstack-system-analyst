@@ -1,10 +1,15 @@
 @startuml 02_sync_async_communication
-skinparam dpi 200
-!theme plain
-skinparam backgroundColor #FFFFFF
 skinparam defaultFontName "DejaVu Sans"
+skinparam defaultFontSize 14
+skinparam backgroundColor #FFFFFF
 skinparam shadowing false
-skinparam roundcorner 10
+skinparam roundcorner 8
+skinparam ArrowColor #334155
+skinparam titleFontColor #0F172A
+skinparam titleFontSize 20
+skinparam noteBackgroundColor #FFF7ED
+skinparam noteBorderColor #D97706
+skinparam dpi 140
 skinparam sequenceMessageAlign center
 
 title Синхронная и асинхронная коммуникация

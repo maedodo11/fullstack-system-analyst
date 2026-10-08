@@ -1,14 +1,23 @@
 @startuml m2_02_sequence_sync
-title Sequence: синхронный платёж с alt/опциями и таймаутом эквайринга
-!pragma layout smetana
 skinparam defaultFontName "DejaVu Sans"
+skinparam defaultFontSize 14
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam ArrowColor #334155
+skinparam titleFontColor #0F172A
+skinparam titleFontSize 20
+skinparam noteBackgroundColor #FFF7ED
+skinparam noteBorderColor #D97706
+skinparam dpi 140
+title Sequence: синхронный платёж с alt/опциями и таймаутом эквайринга
 actor Пациент
 participant "Frontend" as FE
 participant "Booking API" as API
 participant "Эквайринг" as PAY
 Пациент -> FE : «Оплатить визит»
 FE -> API : POST /payments (Idempotency-Key)
-API -> PAY : charge(card)
+API -> PAY : charge(payment_token, operation_key)
 alt #LightGreen успех
   PAY --> API : approved(txn_id)
   API --> FE : 200 paid
@@ -17,7 +26,7 @@ else #Salmon отказ
   API --> FE : 402 payment_required
 else #Orange таймаут (> 10 c)
   PAY --x API : timeout
-  API --> FE : 202 status=processing
-  note right of API : НЕ повторять charge!\nрезультат уточняется webhook'ом\nили poll-job'ом
+  API --> FE : 202 status=UNKNOWN + payment_id
+  note right of API : НЕ создавать новый charge с новым ключом!\nрезультат уточняется webhook'ом\nили poll-job'ом
 end
 @enduml

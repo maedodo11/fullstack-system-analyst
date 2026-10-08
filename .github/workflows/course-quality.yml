@@ -1,0 +1,40 @@
+name: Course quality
+on:
+  pull_request:
+  push:
+    branches: [master]
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:17
+        env:
+          POSTGRES_PASSWORD: training
+          POSTGRES_DB: training
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd "pg_isready -U postgres"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: sudo apt-get update && sudo apt-get install -y graphviz postgresql-client
+      - run: python -m pip install -r tools/requirements.txt
+      - run: python tools/check_course.py
+      - run: python tools/check_examples.py
+      - run: python -c "import json; from openapi_spec_validator import validate; validate(json.load(open('examples/payment/openapi.json')))"
+      - run: psql -h localhost -U postgres -d training -v ON_ERROR_STOP=1 -f examples/payment/schema.sql
+        env:
+          PGPASSWORD: training
+      - run: bash render_all.sh

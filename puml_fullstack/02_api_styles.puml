@@ -1,10 +1,18 @@
 @startuml 02_api_integration_styles
-!pragma layout smetana
-!theme plain
-skinparam backgroundColor #FEFEFE
+skinparam defaultFontName "DejaVu Sans"
+skinparam defaultFontSize 14
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam ArrowColor #334155
+skinparam titleFontColor #0F172A
+skinparam titleFontSize 20
+skinparam noteBackgroundColor #FFF7ED
+skinparam noteBorderColor #D97706
+skinparam dpi 140
 title Выбор стиля интеграции
 
-left to right direction
+top to bottom direction
 rectangle "Клиент\n(web/mobile)" as C
 rectangle "API Gateway\nREST/JSON + OpenAPI,\nrate limit, JWT" as GW
 rectangle "Сервисы\ngRPC (HTTP/2, protobuf)" as S1

@@ -1,11 +1,20 @@
 @startuml ex02_smart_vs_vague
-!pragma layout smetana
-title Пример: размытое требование -> SMART + измеримая NFR
 skinparam defaultFontName "DejaVu Sans"
+skinparam defaultFontSize 14
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam ArrowColor #334155
+skinparam titleFontColor #0F172A
+skinparam titleFontSize 20
+skinparam noteBackgroundColor #FFF7ED
+skinparam noteBorderColor #D97706
+skinparam dpi 140
+title Пример: размытое требование -> SMART + измеримая NFR
 card "**«Сайт должен быть быстрым\nи удобным для пользователей»**\n— нельзя ни проверить, ни принять" as BAD #Salmon
-rectangle "**FR:** При применённом промокоде итог\nсписания = цена * (1 - скидка), округление вниз" as FR #LightGreen
+rectangle "**FR:** По выбранным врачу и дате показать\nдоступные слоты или пустое состояние" as FR #LightGreen
 rectangle "**NFR:** P95 времени ответа API поиска\n<= 300 мс при нагрузке 500 RPS (baseline)\nstretch: 1000 RPS" as NFR #LightGreen
-rectangle "**AC (Gherkin):**\nGiven корзина 1000 руб и промокод SALE10\nWhen применяю код\nThen к списанию 900 руб" as AC #LightGreen
+rectangle "**AC (Gherkin):**\nGiven свободный слот врача на дату\nWhen выполняю поиск\nThen вижу свободный слот; занятых нет" as AC #LightGreen
 BAD -down-> FR : переформулировать\nпо SMART
 BAD -down-> NFR : сделать метрику\nи условие измерения
 BAD -down-> AC : описать проверяемый\nсценарий

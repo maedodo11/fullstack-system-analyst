@@ -1,15 +1,24 @@
 @startuml ex01_ears_pattern
-!pragma layout smetana
-title EARS: 5 грамматических шаблонов формулировки функциональных требований
 skinparam defaultFontName "DejaVu Sans"
-rectangle "**Ubiquitous** (всегда)\nСистема **должна** шифровать PII at rest" as U #LightBlue
+skinparam defaultFontSize 14
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam ArrowColor #334155
+skinparam titleFontColor #0F172A
+skinparam titleFontSize 20
+skinparam noteBackgroundColor #FFF7ED
+skinparam noteBorderColor #D97706
+skinparam dpi 140
+title EARS: 5 грамматических шаблонов формулировки функциональных требований
+rectangle "**Ubiquitous** (всегда)\nСистема **должна** хранить историю изменения цены" as U #LightBlue
 rectangle "**Event (When)**\n**Когда** пользователь вводит валидный промокод,\nсистема должна применить скидку" as W #LightGreen
-rectangle "**State (While)**\n**Пока** статус заказа = «Оплачен»,\nсистема должна разрешать отмену" as S #LightYellow
-rectangle "**Unwanted (If-Then)**\n**Если** платёжный шлюз недоступен,\nто система должна поставить платёж в очередь" as I #Salmon
+rectangle "**State (While)**\n**Пока** бронь активна,\nслот недоступен другим пациентам" as S #LightYellow
+rectangle "**Unwanted (If-Then)**\n**Если** результат оплаты неизвестен,\nто система должна запустить сверку" as I #Salmon
 rectangle "**Optional (Where)**\n**Где** включена 3DS, система должна\nредиректить на страницу банка" as O #Plum
-U -[hidden]right- W
-W -[hidden]right- S
-S -[hidden]right- I
-I -[hidden]right- O
+U -[hidden]down- W
+W -[hidden]down- S
+S -[hidden]down- I
+I -[hidden]down- O
 note bottom: Ключевые слова When/While/If/Where подсвечивают\nтип требования и упрощают генерацию тестов
 @enduml

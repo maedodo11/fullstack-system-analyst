@@ -1,6 +1,15 @@
 @startuml 05_dwh_star_schema
-!pragma layout smetana
-!theme plain
+skinparam defaultFontName "DejaVu Sans"
+skinparam defaultFontSize 14
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam ArrowColor #334155
+skinparam titleFontColor #0F172A
+skinparam titleFontSize 20
+skinparam noteBackgroundColor #FFF7ED
+skinparam noteBorderColor #D97706
+skinparam dpi 140
 title Star-schema: fact_sales + измерения (Kimball)
 hide circle
 skinparam linetype ortho

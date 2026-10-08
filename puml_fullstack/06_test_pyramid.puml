@@ -1,8 +1,17 @@
 @startuml 06_test_pyramid
-!pragma layout smetana
-!theme plain
+skinparam defaultFontName "DejaVu Sans"
+skinparam defaultFontSize 14
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam ArrowColor #334155
+skinparam titleFontColor #0F172A
+skinparam titleFontSize 20
+skinparam noteBackgroundColor #FFF7ED
+skinparam noteBorderColor #D97706
+skinparam dpi 140
 title Пирамида тестов и зона ответственности аналитика
-rectangle "        **E2E / UAT**\nсквозные сценарии: регистрация -> заказ -> оплата\nмедленно, хрупко | ~10%\nАналитик: сценарии и критерии приёмки" as E2E #FFD6A5
+rectangle "        **E2E / UAT**\nсквозные сценарии: регистрация -> заказ -> оплата\nмедленно, хрупко | условно 10%\nАналитик: сценарии и критерии приёмки" as E2E #FFD6A5
 rectangle "     **Интеграционные / контрактные (Pact)**\nAPI + БД + брокер | ~20%\nАналитик: контракты OpenAPI, схемы событий" as INT #BDE3C4
 rectangle "**Unit**\nчистая логика, быстро, CI при каждом PR | ~70%\nАналитик: формулы/валидации в AC" as UNIT #A8D5F2
 E2E -down-> INT

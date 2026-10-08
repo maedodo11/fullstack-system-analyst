@@ -1,0 +1,36 @@
+@startuml payment_sequence
+skinparam defaultFontName "DejaVu Sans"
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam dpi 140
+title Оплата: ответ API и результат провайдера разделены
+autonumber
+actor "Покупатель / UI" as C
+participant "Payment API / worker" as A
+database "БД" as D
+participant "Провайдер" as P
+C -> A : POST order_id + Idempotency-Key
+A -> D : атомарно: ключ, попытка PENDING
+D --> A : COMMIT
+A --> C : 202 + payment_id + Location
+A -> P : charge(token, стабильный operation_key)
+alt подтверждённый успех
+ P --> A : SUCCESS (проверить сумму и операцию)
+ A -> D : атомарно: SUCCESS + заказ PAID + Outbox
+else подтверждённый отказ
+ P --> A : FAILED
+ A -> D : FAILED
+else timeout
+ P --x A : ответа нет
+ A -> D : UNKNOWN + задача сверки
+ A -> P : lookup(operation_id)
+ P --> A : финальный результат / ещё неизвестен
+end
+C -> A : GET /payments/{id}
+A --> C : 200 + бизнес-статус
+note over C, P
+Новая попытка запрещена при PENDING/UNKNOWN.
+Повтор старого ключа возвращает прежнюю попытку.
+Webhook может доставляться несколько раз.
+end note
+@enduml

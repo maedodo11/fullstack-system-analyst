@@ -1,0 +1,21 @@
+@startuml payment_states
+skinparam defaultFontName "DejaVu Sans"
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam dpi 140
+title Состояния попытки оплаты
+[*] --> PENDING : запрос принят
+PENDING --> SUCCESS : подтверждённый успех
+PENDING --> FAILED : подтверждённый отказ
+PENDING --> CANCELLED : отмена до отправки
+PENDING --> UNKNOWN : timeout / результат неизвестен
+UNKNOWN --> SUCCESS : сверка / webhook: успех
+UNKNOWN --> FAILED : сверка / webhook: отказ
+SUCCESS --> [*]
+FAILED --> [*]
+CANCELLED --> [*]
+note right of UNKNOWN
+Это не отказ и не разрешение новой оплаты.
+Превышение срока сверки → алерт и ручной разбор.
+end note
+@enduml

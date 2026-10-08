@@ -1,4 +1,5 @@
-#!/bin/bash
-# Рендер всех PlantUML-схем курса в PNG (200 DPI)
-cd "$(dirname "$0")"
-java -jar plantuml.jar -tpng -Sdpi=200 -o "$PWD/course/images" course/puml/*.puml
+#!/usr/bin/env bash
+# Compatibility entry point: render all course diagrams.
+set -euo pipefail
+repo_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+exec bash "$repo_dir/render_all.sh"
