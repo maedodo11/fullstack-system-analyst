@@ -1,0 +1,1 @@
+SELECT a.id, p.name AS patient, d.name AS doctor FROM appointments a JOIN patients p ON p.id=a.patient_id JOIN slots s ON s.id=a.slot_id JOIN doctors d ON d.id=s.doctor_id WHERE a.status='CONFIRMED' ORDER BY a.id;

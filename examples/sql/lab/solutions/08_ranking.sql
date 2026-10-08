@@ -1,0 +1,1 @@
+WITH counts AS (SELECT p.id,COUNT(a.id) AS total FROM patients p LEFT JOIN appointments a ON a.patient_id=p.id GROUP BY p.id) SELECT id,total,ROW_NUMBER() OVER(ORDER BY total DESC,id) AS rn,RANK() OVER(ORDER BY total DESC) AS rnk,DENSE_RANK() OVER(ORDER BY total DESC) AS dense FROM counts ORDER BY total DESC,id;

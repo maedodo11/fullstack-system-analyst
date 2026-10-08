@@ -1,0 +1,121 @@
+<?xml version='1.0' encoding='utf-8'?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_exception" targetNamespace="https://example.test/analyst-course" exporter="Analyst course" exporterVersion="2.0">
+  <bpmn:message id="DeliveryFailed" name="Событие недоставки уведомления" />
+  <bpmn:process id="Process_exception" isExecutable="false" name="Ручная обработка недоставленного уведомления">
+    <bpmn:laneSet id="Lanes_exception">
+      <bpmn:lane id="AutoLane" name="Автоматизация">
+        <bpmn:flowNodeRef>Failure</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>CreateCase</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="HumanLane" name="Регистратура">
+        <bpmn:flowNodeRef>Contact</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Sla</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Handled</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Escalate</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Escalated</bpmn:flowNodeRef>
+      </bpmn:lane>
+    </bpmn:laneSet>
+    <bpmn:startEvent id="Failure" name="Доставка исчерпана">
+      <bpmn:outgoing>e1</bpmn:outgoing>
+      <bpmn:messageEventDefinition id="Failure_definition" messageRef="DeliveryFailed" />
+    </bpmn:startEvent>
+    <bpmn:serviceTask id="CreateCase" name="Создать задачу&#10;по event_id">
+      <bpmn:incoming>e1</bpmn:incoming>
+      <bpmn:outgoing>e2</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:userTask id="Contact" name="Связаться с пациентом&#10;и записать результат">
+      <bpmn:incoming>e2</bpmn:incoming>
+      <bpmn:outgoing>e3</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:boundaryEvent id="Sla" name="2 часа" attachedToRef="Contact" cancelActivity="true">
+      <bpmn:outgoing>e4</bpmn:outgoing>
+      <bpmn:timerEventDefinition id="Sla_definition">
+        <bpmn:timeDuration>PT2H</bpmn:timeDuration>
+      </bpmn:timerEventDefinition>
+    </bpmn:boundaryEvent>
+    <bpmn:endEvent id="Handled" name="Результат сохранён">
+      <bpmn:incoming>e3</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:userTask id="Escalate" name="Передать старшему&#10;регистратору">
+      <bpmn:incoming>e4</bpmn:incoming>
+      <bpmn:outgoing>e5</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:endEvent id="Escalated" name="Ответственный назначен">
+      <bpmn:incoming>e5</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="e1" sourceRef="Failure" targetRef="CreateCase" />
+    <bpmn:sequenceFlow id="e2" sourceRef="CreateCase" targetRef="Contact" />
+    <bpmn:sequenceFlow id="e3" sourceRef="Contact" targetRef="Handled" />
+    <bpmn:sequenceFlow id="e4" sourceRef="Sla" targetRef="Escalate" name="Срок истёк" />
+    <bpmn:sequenceFlow id="e5" sourceRef="Escalate" targetRef="Escalated" />
+  </bpmn:process>
+  <bpmn:collaboration id="Collab_exception">
+    <bpmn:participant id="Clinic_exception" name="Клиника" processRef="Process_exception" />
+  </bpmn:collaboration>
+  <bpmndi:BPMNDiagram id="Diagram_exception">
+    <bpmndi:BPMNPlane id="Plane_exception" bpmnElement="Collab_exception">
+      <bpmndi:BPMNShape id="Clinic_exception_di" bpmnElement="Clinic_exception" isHorizontal="true">
+        <dc:Bounds x="40" y="100" width="1020" height="540" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="AutoLane_di" bpmnElement="AutoLane" isHorizontal="true">
+        <dc:Bounds x="70" y="100" width="990" height="170" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="HumanLane_di" bpmnElement="HumanLane" isHorizontal="true">
+        <dc:Bounds x="70" y="270" width="990" height="370" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Failure_di" bpmnElement="Failure">
+        <dc:Bounds x="145" y="165" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="CreateCase_di" bpmnElement="CreateCase">
+        <dc:Bounds x="230" y="140" width="175" height="86" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Contact_di" bpmnElement="Contact">
+        <dc:Bounds x="455" y="315" width="190" height="86" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Sla_di" bpmnElement="Sla">
+        <dc:Bounds x="605" y="383" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="650" y="399" width="55" height="22" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Handled_di" bpmnElement="Handled">
+        <dc:Bounds x="755" y="340" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Escalate_di" bpmnElement="Escalate">
+        <dc:Bounds x="700" y="505" width="190" height="86" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Escalated_di" bpmnElement="Escalated">
+        <dc:Bounds x="960" y="530" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="899" y="580" width="155" height="36" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="e1_di" bpmnElement="e1">
+        <di:waypoint x="181" y="183" />
+        <di:waypoint x="230" y="183" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="e2_di" bpmnElement="e2">
+        <di:waypoint x="405" y="183" />
+        <di:waypoint x="440" y="183" />
+        <di:waypoint x="440" y="358" />
+        <di:waypoint x="455" y="358" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="e3_di" bpmnElement="e3">
+        <di:waypoint x="645" y="358" />
+        <di:waypoint x="755" y="358" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="e4_di" bpmnElement="e4">
+        <di:waypoint x="623" y="419" />
+        <di:waypoint x="623" y="548" />
+        <di:waypoint x="700" y="548" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="535" y="450" width="78" height="30" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="e5_di" bpmnElement="e5">
+        <di:waypoint x="890" y="548" />
+        <di:waypoint x="960" y="548" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>
