@@ -26,8 +26,8 @@ P --> UC1
 P --> UC2
 P --> UC3
 R --> UC5
-R ..> UC3 : <<extend>>
+R --> UC3
 UC2 ..> UC4 : <<include>>
 S --> UC4
-note bottom of UC2: <<include>> = обязательный шаг (всегда)\n<<extend>> = опциональный (при условии)
+note bottom of UC2: <<include>> = обязательный шаг (всегда)\n<<extend>> связывает варианты использования
 @enduml

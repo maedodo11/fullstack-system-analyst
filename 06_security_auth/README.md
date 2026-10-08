@@ -1,10 +1,22 @@
 # Модуль 6. Безопасность и аутентификация
 
+## Маршрут урока
+
+| Режим | Что делать |
+|---|---|
+| База · 20–30 мин | Вход, роль и право на конкретный объект. Прочитайте [основу](#lesson-base) и объясните один пример своими словами. |
+| Практика · 30–45 мин | Выполните [задание](#lesson-practice), затем сравните с [критериями](../practice/assessment.md). |
+| Углубление · 20–40 мин | OAuth/OIDC, JWT и threat model. Возвращайтесь после первой практики. |
+
+**Артефакт в портфолио:** [шаг сквозного проекта](../project/04_api.md). Время ориентировочное; один урок можно разделить на несколько занятий.
+
 > **Результат модуля:** роль не заменяет проверку владельца. Начинающему: сначала [маршрут](../START_HERE.md), затем теория → упражнение → самопроверка.
 
 Аналитик закладывает требования безопасности на старте — дешевле, чем латать потом.
 
-## Теория
+<a id="lesson-base"></a>
+
+## База и разборы
 
 ### 1. Аутентификация vs авторизация
 - **AuthN** — кто ты (логин/пароль, токен, biometrics).
@@ -13,6 +25,8 @@
 ### 2. OAuth 2.0 / OIDC — main flow Authorization Code + PKCE
 
 ![OAuth PKCE flow](../images_fullstack/04_oauth_code_pkce.png)
+
+*Авторизационный код обменивается с code_verifier. PKCE связывает запрос авторизации с обменом кода; параметры безопасности проверяются отдельно.*
 ```
 1. Клиент → /authorize?response_type=code&client_id=...&redirect_uri=...&code_challenge=...&code_challenge_method=S256&state=...
 2. Пользователь логинится у Auth Server
@@ -51,6 +65,8 @@ Injection (параметризованные запросы), Broken Access Con
 - OWASP Top 10 (2021): https://owasp.org/www-project-top-ten/
 - OWASP ASVS — чеклист требований безопасности: https://owasp.org/www-project-application-security-verification-standard/
 - Cheatsheets: https://cheatsheetseries.owasp.org/
+
+<a id="lesson-practice"></a>
 
 ## Практика
 - [ ] Нарисуйте sequence Authorization Code + PKCE и покажите точку перехвата без PKCE.

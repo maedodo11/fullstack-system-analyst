@@ -1,0 +1,151 @@
+<?xml version='1.0' encoding='utf-8'?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="Definitions_booking" targetNamespace="https://example.test/analyst-course" exporter="Analyst course" exporterVersion="2.0">
+  <bpmn:message id="Request" name="Запрос записи" />
+  <bpmn:process id="Process_booking" isExecutable="false" name="Запись на приём">
+    <bpmn:laneSet id="Lanes_booking">
+      <bpmn:lane id="BookingLane" name="Сервис записи">
+        <bpmn:flowNodeRef>Start</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Reserve</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Available</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Confirm</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Reject</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Done</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Rejected</bpmn:flowNodeRef>
+      </bpmn:lane>
+    </bpmn:laneSet>
+    <bpmn:startEvent id="Start" name="Запрос записи">
+      <bpmn:outgoing>f1</bpmn:outgoing>
+      <bpmn:messageEventDefinition id="Start_definition" messageRef="Request" />
+    </bpmn:startEvent>
+    <bpmn:serviceTask id="Reserve" name="Проверить и занять слот&#10;одной транзакцией">
+      <bpmn:incoming>f1</bpmn:incoming>
+      <bpmn:outgoing>f2</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:exclusiveGateway id="Available" name="Запись создана?" default="f_no">
+      <bpmn:incoming>f2</bpmn:incoming>
+      <bpmn:outgoing>f_yes</bpmn:outgoing>
+      <bpmn:outgoing>f_no</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sendTask id="Confirm" name="Вернуть подтверждение">
+      <bpmn:incoming>f_yes</bpmn:incoming>
+      <bpmn:outgoing>f3</bpmn:outgoing>
+    </bpmn:sendTask>
+    <bpmn:sendTask id="Reject" name="Вернуть конфликт">
+      <bpmn:incoming>f_no</bpmn:incoming>
+      <bpmn:outgoing>f4</bpmn:outgoing>
+    </bpmn:sendTask>
+    <bpmn:endEvent id="Done" name="Подтверждено">
+      <bpmn:incoming>f3</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:endEvent id="Rejected" name="Не создано">
+      <bpmn:incoming>f4</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="f1" sourceRef="Start" targetRef="Reserve" />
+    <bpmn:sequenceFlow id="f2" sourceRef="Reserve" targetRef="Available" />
+    <bpmn:sequenceFlow id="f_yes" sourceRef="Available" targetRef="Confirm" name="Да">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">created = true</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="f_no" sourceRef="Available" targetRef="Reject" name="Нет" />
+    <bpmn:sequenceFlow id="f3" sourceRef="Confirm" targetRef="Done" />
+    <bpmn:sequenceFlow id="f4" sourceRef="Reject" targetRef="Rejected" />
+  </bpmn:process>
+  <bpmn:collaboration id="Collab_booking">
+    <bpmn:participant id="Clinic_booking" name="Клиника" processRef="Process_booking" />
+    <bpmn:participant id="Patient_booking" name="Пациент" />
+    <bpmn:messageFlow id="m_request" name="Запрос" sourceRef="Patient_booking" targetRef="Start" />
+    <bpmn:messageFlow id="m_confirm" name="Результат" sourceRef="Confirm" targetRef="Patient_booking" />
+    <bpmn:messageFlow id="m_reject" name="Конфликт" sourceRef="Reject" targetRef="Patient_booking" />
+  </bpmn:collaboration>
+  <bpmndi:BPMNDiagram id="Diagram_booking">
+    <bpmndi:BPMNPlane id="Plane_booking" bpmnElement="Collab_booking">
+      <bpmndi:BPMNShape id="Clinic_booking_di" bpmnElement="Clinic_booking" isHorizontal="true">
+        <dc:Bounds x="40" y="180" width="930" height="320" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Patient_booking_di" bpmnElement="Patient_booking" isHorizontal="true">
+        <dc:Bounds x="40" y="30" width="930" height="75" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BookingLane_di" bpmnElement="BookingLane" isHorizontal="true">
+        <dc:Bounds x="70" y="180" width="900" height="320" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Start_di" bpmnElement="Start">
+        <dc:Bounds x="150" y="260" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Reserve_di" bpmnElement="Reserve">
+        <dc:Bounds x="230" y="235" width="185" height="86" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Available_di" bpmnElement="Available" isMarkerVisible="true">
+        <dc:Bounds x="475" y="253" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="440" y="210" width="105" height="30" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Confirm_di" bpmnElement="Confirm">
+        <dc:Bounds x="600" y="205" width="175" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Reject_di" bpmnElement="Reject">
+        <dc:Bounds x="600" y="355" width="175" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Done_di" bpmnElement="Done">
+        <dc:Bounds x="860" y="227" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Rejected_di" bpmnElement="Rejected">
+        <dc:Bounds x="860" y="377" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="f1_di" bpmnElement="f1">
+        <di:waypoint x="186" y="278" />
+        <di:waypoint x="230" y="278" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f2_di" bpmnElement="f2">
+        <di:waypoint x="415" y="278" />
+        <di:waypoint x="475" y="278" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f_yes_di" bpmnElement="f_yes">
+        <di:waypoint x="500" y="253" />
+        <di:waypoint x="500" y="245" />
+        <di:waypoint x="600" y="245" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="548" y="220" width="30" height="20" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f_no_di" bpmnElement="f_no">
+        <di:waypoint x="500" y="303" />
+        <di:waypoint x="500" y="395" />
+        <di:waypoint x="600" y="395" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="510" y="330" width="35" height="20" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f3_di" bpmnElement="f3">
+        <di:waypoint x="775" y="245" />
+        <di:waypoint x="860" y="245" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f4_di" bpmnElement="f4">
+        <di:waypoint x="775" y="395" />
+        <di:waypoint x="860" y="395" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="m_request_di" bpmnElement="m_request">
+        <di:waypoint x="168" y="105" />
+        <di:waypoint x="168" y="260" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="178" y="125" width="80" height="20" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="m_confirm_di" bpmnElement="m_confirm">
+        <di:waypoint x="680" y="205" />
+        <di:waypoint x="680" y="105" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="695" y="125" width="80" height="20" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="m_reject_di" bpmnElement="m_reject">
+        <di:waypoint x="700" y="435" />
+        <di:waypoint x="700" y="465" />
+        <di:waypoint x="940" y="465" />
+        <di:waypoint x="940" y="105" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="840" y="440" width="80" height="20" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

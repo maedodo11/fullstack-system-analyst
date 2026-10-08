@@ -33,6 +33,13 @@ jobs:
       - run: python -m pip install -r tools/requirements.txt
       - run: python tools/check_course.py
       - run: python tools/check_examples.py
+      - run: python tools/check_project.py
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm ci --prefix tools/bpmn
+      - run: npx --prefix tools/bpmn playwright install --with-deps chromium
+      - run: node tools/bpmn/render.cjs
       - run: python -c "import json; from openapi_spec_validator import validate; validate(json.load(open('examples/payment/openapi.json')))"
       - run: psql -h localhost -U postgres -d training -v ON_ERROR_STOP=1 -f examples/payment/schema.sql
         env:

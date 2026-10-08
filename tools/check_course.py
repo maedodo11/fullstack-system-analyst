@@ -11,7 +11,7 @@ from diagram_catalog import GROUPS
 
 errors = []
 for doc in ROOT.rglob('*.md'):
-    if '.git' in doc.parts:
+    if any(part in {'.git', 'node_modules', '.venv', 'venv'} for part in doc.parts):
         continue
     text = re.sub(r'```.*?```', '', doc.read_text(), flags=re.S)
     for raw in re.findall(r'!?\[[^\]]*\]\(([^)]+)\)', text):
