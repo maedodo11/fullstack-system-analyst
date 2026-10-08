@@ -1,34 +1,37 @@
 @startuml 05_saga_orchestration
-skinparam dpi 200
-!theme plain
-skinparam backgroundColor #FFFFFF
 skinparam defaultFontName "DejaVu Sans"
+skinparam defaultFontSize 14
+skinparam backgroundColor #FFFFFF
 skinparam shadowing false
-skinparam roundcorner 10
-title Saga с оркестратором: успех и компенсация
-
-rectangle "Saga Orchestrator" as ORCH #4FC3F7
-
-rectangle "1. Create Order\n(Orders svc)" as S1 #81C784
-rectangle "2. Reserve Stock\n(Inventory svc)" as S2 #81C784
-rectangle "3. Charge Payment\n(Payments svc)" as S3 #81C784
-rectangle "C2. Release Stock\n**компенсация**" as C2 #E57373
-rectangle "C3. Refund Payment\n**компенсация**" as C3 #E57373
-
-ORCH --> S1 : cmd
-S1 --> ORCH : done
-ORCH --> S2 : cmd
-S2 --> ORCH : done
-ORCH --> S3 : cmd
-S3 ..> ORCH : **FAIL!**
-
-ORCH ..> C3 : запустить компенсацию
-C3 ..> C2 : затем предыдущую
-C2 ..> ORCH : saga rolled back
-
-note right of ORCH
-  Каждый шаг идемпотентен,
-  состояние саги — в БД оркестратора.
-  Откат = обратный порядок компенсаций.
+skinparam roundcorner 8
+skinparam ArrowColor #334155
+skinparam titleFontColor #0F172A
+skinparam titleFontSize 20
+skinparam noteBackgroundColor #FFF7ED
+skinparam noteBorderColor #D97706
+skinparam dpi 140
+title Saga оплаты: отказ и неизвестный результат различаются
+state "Заказ создан" as C
+state "Товар зарезервирован" as R
+state "Оплата выполняется" as P
+state "Сверка результата\nUNKNOWN / PAYMENT_RECONCILING" as U
+state "Заказ оплачен" as S
+state "Снять резерв\nпри подтверждённом отказе" as F
+state "Ручной разбор\nс журналом и алертом" as M
+[*] --> C
+C --> R
+R --> P
+P --> S : подтверждённый успех
+P --> F : подтверждённый отказ
+P --> U : timeout
+U --> S : сверка / webhook: успех
+U --> F : сверка: отказ
+U --> M : превышен срок сверки
+S --> [*]
+F --> [*]
+note bottom of U
+Не запускаем новый charge с новым ключом.
+Компенсация — отдельное бизнес-действие, не rollback.
+Поздний успех после отмены требует контролируемого refund.
 end note
 @enduml

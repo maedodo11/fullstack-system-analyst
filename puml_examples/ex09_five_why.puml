@@ -1,7 +1,16 @@
 @startuml ex09_five_why
-!pragma layout smetana
-title elicitation: техника «5 Почему» — от симптома к корневому требованию
 skinparam defaultFontName "DejaVu Sans"
+skinparam defaultFontSize 14
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam ArrowColor #334155
+skinparam titleFontColor #0F172A
+skinparam titleFontSize 20
+skinparam noteBackgroundColor #FFF7ED
+skinparam noteBorderColor #D97706
+skinparam dpi 140
+title elicitation: техника «5 Почему» — от симптома к корневому требованию
 rectangle "Симптом: «Клиенты не доходят до врача»" as S0 #Salmon
 rectangle "Почему 1: приходят без напоминания" as S1
 rectangle "Почему 2: напоминаний нет" as S2

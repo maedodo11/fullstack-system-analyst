@@ -1,13 +1,22 @@
 @startuml m3_01_rest_maturity
-title REST: зрелость по Ричардсону (L0 → L3) на одном ресурсе «Записи»
-!pragma layout smetana
 skinparam defaultFontName "DejaVu Sans"
+skinparam defaultFontSize 14
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam ArrowColor #334155
+skinparam titleFontColor #0F172A
+skinparam titleFontSize 20
+skinparam noteBackgroundColor #FFF7ED
+skinparam noteBorderColor #D97706
+skinparam dpi 140
+title REST: зрелость по Ричардсону (L0 → L3) на одном ресурсе «Записи»
 rectangle "L0 — один URL, всё POST\nPOST /api  body={action:'getAppointment', id:42}" as L0 #LightGray
 rectangle "L1 — ресурсы (существительные)\nGET /v1/appointments/42" as L1 #LightYellow
 rectangle "L2 — HTTP-глаголы + коды\nPOST /v1/appointments → 201 + Location\nPATCH .../cancel → 204 | 409 конфликт слота" as L2 #LightBlue
 rectangle "L3 — HATEOAS: ссылки в ответе\n200 {id:42, status:'booked',\n links:{self:'/v1/appointments/42',\n cancel:'/v1/appointments/42/cancel',\n reschedule:'...'}}" as L3 #LightGreen
-L0 -right-> L1 : выделите ресурсы
-L1 -right-> L2 : используйте семантику метода
-L2 -right-> L3 : отдавайте клиенту допустимые действия
+L0 -down-> L1 : выделите ресурсы
+L1 -down-> L2 : используйте семантику метода
+L2 -down-> L3 : отдавайте клиенту допустимые действия
 note bottom of L3 : Клиент не гадаёт, можно ли отменить:\nкнопка появляется только если ссылка есть.\nСервер меняет правила — клиент не падает.
 @enduml

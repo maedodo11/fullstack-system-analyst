@@ -1,7 +1,15 @@
 @startuml m4_03_isolation_anomaly
-!pragma layout smetana
-skinparam dpi 150
-skinparam defaultFontName DejaVu Sans
+skinparam defaultFontName "DejaVu Sans"
+skinparam defaultFontSize 14
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam ArrowColor #334155
+skinparam titleFontColor #0F172A
+skinparam titleFontSize 20
+skinparam noteBackgroundColor #FFF7ED
+skinparam noteBorderColor #D97706
+skinparam dpi 140
 title Аномалия Lost Update при Read Committed (два кассира, счёт 100 ₽)
 
 participant "Транзакция A\n(кассир 1)" as TA
@@ -15,5 +23,5 @@ BAL --> TB : 100
 TA -> BAL : UPDATE SET balance = 100 - 70 = 30; COMMIT
 note over BAL : баланс = 30
 TB -> BAL : UPDATE SET balance = 100 - 50 = 50; COMMIT
-note over BAL #F8CECC : Ожидание: 100 - 70 - 50 = -20\nФакт: 50\nСписание кассира B потеряно:\nобе транзакции читали 100\nдо фиксации другой
+note over BAL #F8CECC : Ожидание: 100 - 70 - 50 = -20\nФакт: 50\nРезультат списания кассира A перезаписан:\nобе транзакции читали 100\nдо фиксации другой
 @enduml

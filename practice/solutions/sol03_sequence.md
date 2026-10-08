@@ -22,15 +22,21 @@ else резерв ок
   O -> DB: INSERT order(status=CREATED)
   O --> W: 201 {orderId}
   W -> PS: открыть форму оплаты
-  PS --> W: callback payment.succeeded (redirect)
+  PS --> W: redirect (не доказательство результата)
   alt платёж отклонён
     PS --> W: declined
+    O -> PS: проверить окончательный отказ серверно
     W -> O: POST /orders/{id}/cancel
     O -> ST: release reservation (sync)
     O -> K: order.cancelled
+  else результат неизвестен / timeout
+    O -> DB: payment UNKNOWN + задача сверки
+    O --> W: payment_id + «Уточняем результат»
+    note over O, PS: Не создавать новый charge до сверки
   else платёж успешен
     O -> PS: GET /payments/{id} (server-side verify!)
-    O -> DB: UPDATE status=PAID
+    PS --> O: подтверждённый SUCCESS
+    O -> DB: транзакция: UPDATE status=PAID + INSERT outbox
     O -> K: publish order.paid (outbox)
     K -> N: consume order.paid
     N --> P: email/SMS подтверждение

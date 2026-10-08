@@ -1,6 +1,15 @@
 @startuml 04_oauth_code_pkce
-!pragma layout smetana
-!theme plain
+skinparam defaultFontName "DejaVu Sans"
+skinparam defaultFontSize 14
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam ArrowColor #334155
+skinparam titleFontColor #0F172A
+skinparam titleFontSize 20
+skinparam noteBackgroundColor #FFF7ED
+skinparam noteBorderColor #D97706
+skinparam dpi 140
 title OAuth 2.0 Authorization Code + PKCE
 autonumber
 actor "Пользователь" as U
@@ -8,14 +17,14 @@ participant "SPA / Mobile" as APP
 participant "Auth Server\n(Keycloak)" as AS
 participant "API" as API
 
-APP -> APP : code_verifier = random,\nchallenge = SHA256(verifier)
-APP -> AS : /authorize?response_type=code&code_challenge=...
+APP -> APP : code_verifier = random,\nchallenge = BASE64URL(SHA256(verifier))
+APP -> AS : /authorize?response_type=code&code_challenge=...&code_challenge_method=S256\n&state=... (OIDC: nonce)
 U -> AS : логин + MFA
 AS --> APP : redirect ?code=xyz
 APP -> AS : /token (code + code_verifier)
-AS --> APP : access_token(JWT, 10 мин) + refresh_token
+AS --> APP : access_token (JWT или opaque)\nrefresh_token по политике AS
 APP -> API : GET /orders (Bearer JWT)
-API -> API : подпись + exp + aud + scope
+API -> API : JWT: подпись + iss + exp + aud + scope\nopaque: introspection по контракту
 API --> APP : 200 данные
 note right of AS : Без PKCE код можно перехватить\nчерез кастомный redirect на мобильных
 @enduml

@@ -1,12 +1,21 @@
 @startuml ex05_nfr_iso
-!pragma layout smetana
-title Классы NFR по ISO/IEC 25010 и типовые метрики для API сервиса записи
 skinparam defaultFontName "DejaVu Sans"
+skinparam defaultFontSize 14
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam ArrowColor #334155
+skinparam titleFontColor #0F172A
+skinparam titleFontSize 20
+skinparam noteBackgroundColor #FFF7ED
+skinparam noteBorderColor #D97706
+skinparam dpi 140
+title Учебные категории качества и примеры метрик для API сервиса записи
 rectangle "Performance efficiency:\nP95 <= 300 мс, 500 RPS на стенде perf" as PE #LightBlue
 rectangle "Reliability:\nSLA 99.9%/мес, RTO 4 ч, RPO 15 мин" as RE #LightGreen
 rectangle "Security:\nOWASP Top-10, шифрование PII at rest" as SE #Salmon
 rectangle "Usability:\nзапись <= 3 шага, WCAG 2.1 AA" as US #Plum
-rectangle "Maintainability:\ne2e покрытие >= 80%, MTTR <= 30 мин" as MA #LightYellow
+rectangle "Maintainability:\nкритичные сценарии проверены;\nвремя диагностики и ремонта измеряется" as MA #LightYellow
 PE -right- RE
 RE -right- SE
 SE -down- US

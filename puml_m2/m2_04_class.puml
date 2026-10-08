@@ -1,7 +1,16 @@
 @startuml m2_04_class
-title Class-диаграмма предметной области: snapshot цены и связующий класс
-!pragma layout smetana
 skinparam defaultFontName "DejaVu Sans"
+skinparam defaultFontSize 14
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam ArrowColor #334155
+skinparam titleFontColor #0F172A
+skinparam titleFontSize 20
+skinparam noteBackgroundColor #FFF7ED
+skinparam noteBorderColor #D97706
+skinparam dpi 140
+title Class-диаграмма предметной области: snapshot цены и связующий класс
 class Врач {
   -id
   -ФИО

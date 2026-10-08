@@ -1,24 +1,33 @@
 @startuml m3_05_webhook_retry
-title Webhook-оплата: повторные доставки, HMAC-подпись и защита от двойного зачисления
-!pragma layout smetana
 skinparam defaultFontName "DejaVu Sans"
-participant "Эквайринг" as PAY
-participant "Наш callback\nPOST /callbacks/payment" as CB
-database "events_handled\n(уникальный txn_id)" as DB
-PAY -> CB : attempt 1: payment.succeeded\ntxn=T1, X-Signature=HMAC(secret,body)
-CB -> CB : подпись OK? статус известен?
-CB -> DB : INSERT txn=T1 (unique) → OK
-CB --> PAY : 200 OK
-== Сеть/наш прод деградировал, эквайринг не получил 2xx ==
-PAY -> CB : attempt 2 (через 1 мин): тот же txn=T1
-CB -> DB : INSERT txn=T1 → дубликат!
-note right of CB : Дубликат → НЕ начислять бонусы повторно
-CB --> PAY : 200 OK (ack «съеден» намеренно)
-PAY -> CB : attempt 3: подписи нет / не совпала
-CB --> PAY : 401 Unauthorized
-note over PAY
-  Отправитель ретраит с backoff:
-  1м → 5м → 30м → 2ч… максимум N,
-  затем manual resend из кабинета
+skinparam defaultFontSize 14
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam ArrowColor #334155
+skinparam titleFontColor #0F172A
+skinparam titleFontSize 20
+skinparam noteBackgroundColor #FFF7ED
+skinparam noteBorderColor #D97706
+skinparam dpi 140
+title Webhook: подтверждаем только надёжно сохранённое событие
+participant "Провайдер" as P
+participant "Callback API" as A
+database "БД / inbox" as D
+participant "Worker" as W
+P -> A : event_id, payment_id, status, подпись
+A -> A : проверить подпись сырого тела,\nсхему, источник и replay-window
+A -> D : атомарно INSERT inbox(event_id UNIQUE)
+D --> A : COMMIT
+A --> P : 200 (принято надёжно)
+W -> D : взять событие inbox
+W -> D : одна транзакция: изменить платёж,\nзаказ и отметить событие обработанным
+P -> A : повтор того же event_id
+A -> D : INSERT ON CONFLICT DO NOTHING
+A --> P : 200 без повторного эффекта
+note over A, D
+Сбой БД до COMMIT → временная ошибка, не 2xx.
+Разные события одного payment_id допустимы:
+дедупликация по event_id + переходы состояния.
 end note
 @enduml

@@ -1,35 +1,27 @@
 @startuml m4_05_nosql_choice
-!pragma layout smetana
-skinparam dpi 150
-skinparam defaultFontName DejaVu Sans
-title Decision-диаграмма: какая СУБД под какую модель доступа
-
+skinparam defaultFontName "DejaVu Sans"
+skinparam defaultFontSize 14
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam ArrowColor #334155
+skinparam titleFontColor #0F172A
+skinparam titleFontSize 20
+skinparam noteBackgroundColor #FFF7ED
+skinparam noteBorderColor #D97706
+skinparam dpi 140
+title Выбор хранилища по нагрузке и инвариантам
 start
-:Опишите 2-3 главных запроса\n(что ищем, как часто, объём);
-if (Нужны JOIN, транзакции,\nцелостность, отчёты?) then (да)
-  if (Объём writes > 10k/s и линейное\nмасштабирование без JOIN?) then (да)
-    :Cassandra / column-family\n(телеметрия, события);
-    stop
-  elseif (Полнотекстовый поиск\nи агрегации по логам?) then (да)
-    :Elasticsearch + PostgreSQL\n(не вместо, а в паре);
-    stop
-  elseif (Временные окна,\nOLAP-аналитика метрик?) then (да)
-    :ClickHouse / TimescaleDB;
-    stop
-  else (нет)
-    :PostgreSQL (+JSONB для гибких\nатрибутов — 70% «документных» кейсов);
-    stop
-  endif
+:Описать запросы, объём, рост,\nтранзакции и требования к актуальности;
+if (Источник истины: связи и транзакции?) then (да)
+ :Оценить PostgreSQL;\nJSONB для гибких атрибутов;
 else (нет)
-  if (Гибкая схема, объект целиком\nчитается/пишется одним куском?) then (да)
-    :MongoDB / document\n(карточки, профили);
-    stop
-  elseif (Просто get/set по ключу,\nкеш/сессии/счётчики?) then (да)
-    :Redis / key-value;
-    stop
-  else (нет)
-    :Много обходов связей\n(рекомендации, антифрод)?\n-> Neo4j / graph;
-    stop
-  endif
+ :Сравнить документную, key-value\nи графовую модели под запросы;
 endif
+if (Нужен отдельный поиск или аналитика?) then (да)
+ :Добавить поисковую/OLAP read-модель;\nисточник истины сохранить явно;
+ :Указать доставку изменений, lag,\nдедупликацию и восстановление;
+endif
+:Проверить кандидатов на данных и нагрузке;\nзафиксировать стоимость и решение в ADR;
+stop
 @enduml

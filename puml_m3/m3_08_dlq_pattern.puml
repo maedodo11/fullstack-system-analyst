@@ -1,7 +1,16 @@
 @startuml m3_08_dlq_pattern
-title Обработка «ядовитого» сообщения: retries → DLQ → алерт → реплей
-!pragma layout smetana
 skinparam defaultFontName "DejaVu Sans"
+skinparam defaultFontSize 14
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam ArrowColor #334155
+skinparam titleFontColor #0F172A
+skinparam titleFontSize 20
+skinparam noteBackgroundColor #FFF7ED
+skinparam noteBorderColor #D97706
+skinparam dpi 140
+title Обработка «ядовитого» сообщения: retries → DLQ → алерт → реплей
 queue "topic: payments" as T
 participant "Consumer" as CS
 database "retry-topic\n(max 5 попыток,\nbackoff 10s→1m→5m)" as R

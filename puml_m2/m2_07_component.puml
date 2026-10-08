@@ -1,7 +1,16 @@
 @startuml m2_07_component
-title Component: микросервисная карта — границы и контракты
-!pragma layout smetana
 skinparam defaultFontName "DejaVu Sans"
+skinparam defaultFontSize 14
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam ArrowColor #334155
+skinparam titleFontColor #0F172A
+skinparam titleFontSize 20
+skinparam noteBackgroundColor #FFF7ED
+skinparam noteBorderColor #D97706
+skinparam dpi 140
+title Component: микросервисная карта — границы и контракты
 [Web / Mobile] as CLIENT
 component "API Gateway\n(auth, rate-limit)" as GW
 component "Booking Service\nзаписи, слоты" as BS #LightGreen

@@ -22,7 +22,7 @@ PII не попадает в логи (маскирование по маске 
 бэкапа, учебный drill раз в квартал).
 ```
 
-Разбор: каждая строка содержит **метрику + условие измерения + следствие**. Если в NFR нет цифры — это не требование, а пожелание (модуль 1).
+Разбор: каждая строка содержит **метрику + условие измерения + следствие**. Требование должно быть объективно проверяемым; не всегда нужна цифра: «токены не записываются в логи» проверяется аудитом. Для производительности нужны числовые пороги (модуль 1).
 
 ## 2. Критерии приёмки: Gherkin с краевыми случаями
 
@@ -39,6 +39,7 @@ Feature: Оформление заказа с промокодом
     And промокод помечен использованным
 
   Scenario Outline: Невалидные промокоды
+    Given EXPIRED10 просрочен, USED10 уже использован, пустой код недопустим
     When применяет промокод "<code>"
     Then ошибка "<error>" с HTTP 422
     And сумма осталась 1000 руб
@@ -46,7 +47,7 @@ Feature: Оформление заказа с промокодом
     Examples:
       | code        | error                  |
       | EXPIRED10   | PROMOCODE_EXPIRED      |
-      | SALE10      | PROMOCODE_USED         |
+      | USED10      | PROMOCODE_USED         |
       | ""          | PROMOCODE_REQUIRED     |
       | hax'));--   | PROMOCODE_INVALID      |
 ```
@@ -66,7 +67,7 @@ Content-Type: application/json
 Семантика для спецификации:
 - первый запрос → 201, ответ кешируется под ключом на 24 ч;
 - повтор с тем же ключом и тем же телом → тот же 201 из кеша (side-effect НЕ повторяется);
-- повтор с тем же ключом, но другим телом → 422 `IDEMPOTENCY_KEY_REUSED`.
+- повтор с тем же ключом, но другим телом → 409 `IDEMPOTENCY_CONFLICT` (выбранная семантика курса).
 
 Когда требовать: любой POST с деньгами, списаниями, отправкой SMS/email (модуль 3).
 
@@ -104,16 +105,28 @@ components:
 ## 5. SQL-шаблоны для ТЗ на отчёты
 
 ```sql
--- Выручка по дням + скользящее среднее за 7 дней (спецификация витрины)
-WITH daily AS (
-  SELECT date_trunc('day', created_at) AS d, sum(amount)/100.0 AS revenue
+-- PostgreSQL: оплаченные суммы, копейки -> рубли, календарные дни UTC.
+-- Возвраты здесь не учитываются: метрика gross, не net revenue.
+WITH calendar AS (
+  SELECT generate_series(
+    (now() AT TIME ZONE 'UTC')::date - 89,
+    (now() AT TIME ZONE 'UTC')::date,
+    interval '1 day')::date AS d
+), daily AS (
+  SELECT (created_at AT TIME ZONE 'UTC')::date AS d,
+         sum(amount)/100.0 AS revenue
   FROM orders
-  WHERE status <> 'CANCELLED' AND created_at >= now() - interval '90 days'
+  WHERE status = 'PAID'
+    AND created_at >= ((now() AT TIME ZONE 'UTC')::date - 89) AT TIME ZONE 'UTC'
   GROUP BY 1
+), filled AS (
+  SELECT c.d, coalesce(d.revenue, 0) AS revenue
+  FROM calendar c LEFT JOIN daily d ON d.d = c.d
 )
 SELECT d, revenue,
        avg(revenue) OVER (ORDER BY d ROWS BETWEEN 6 PRECEDING AND CURRENT ROW) AS ma7
-FROM daily ORDER BY d;
+FROM filled ORDER BY d;
+-- Первые 6 строк имеют неполное окно; для полного окна загрузите ещё 6 дней истории.
 
 -- Дедупликация событий при at-least-once доставке (загрузка в DWH)
 SELECT * FROM (
@@ -122,7 +135,7 @@ SELECT * FROM (
 ) t WHERE rn = 1;
 ```
 
-Разбор: второй запрос — обязательный слой защиты при CDC/Kafka-загрузке: at-least-once гарантирует дубли, модель должна принимать их молча (модуль 11).
+Разбор: второй запрос — обязательный слой защиты при CDC/Kafka-загрузке: at-least-once допускает дубли; повтор не должен повторять бизнес-эффект. Конфликт одинакового event_id с разным содержимым требует расследования (модуль 11).
 
 ## 6. Чеклист ревью интеграционного контракта (перед sign-off)
 
@@ -148,3 +161,5 @@ Content-Type: application/merge-patch+json
 
 ---
 Инструменты курса: [templates/](../templates/) · [practice/tasks.md](../practice/tasks.md) · [GLOSSARY.md](../GLOSSARY.md)
+
+**Перед копированием:** согласуйте коды статусов и имя заголовка с целевым API. В этом курсе стандартный учебный заголовок — Idempotency-Key; X-Idempotency-Key допустим как отдельная договорённость. Учебные TTL и нагрузка не являются готовыми настройками продакшна.

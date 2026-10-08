@@ -13,7 +13,7 @@
 | definition of ready (DoR) | готовность к разработке | чеклист перед взятием в спринт |
 | definition of done (DoD) | определение завершённости | критерии приёмки задачи командой |
 | EARS (Easy Approach to Requirements Syntax) | формальный шаблон формулировки требований | 5 шаблонов: Ubiquitous / When / While / If / Where, см. модуль 1 |
-| SPIDR | паттерн декомпозиции эпиков | Simple · Path · Inclusive-exclusive · Divide · Repeatable-across |
+| SPIDR | паттерн декомпозиции эпиков | Spike · Paths · Interfaces · Data · Rules; исследование, пути, интерфейсы, данные, правила |
 | MoSCoW | приоритизация требований | Must / Should / Could / Won't this time |
 | Kano model | классификация ожиданий пользователя | базовые / линейные / wow-свойства |
 | design constraint | ограничение проектирования | не путать с NFR: «только managed Postgres», 152-ФЗ |

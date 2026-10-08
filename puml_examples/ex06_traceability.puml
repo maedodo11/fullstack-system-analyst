@@ -1,7 +1,16 @@
 @startuml ex06_traceability
-!pragma layout smetana
-title Матрица трассировки: BR -> FR -> UI -> тест -> коммит
 skinparam defaultFontName "DejaVu Sans"
+skinparam defaultFontSize 14
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam ArrowColor #334155
+skinparam titleFontColor #0F172A
+skinparam titleFontSize 20
+skinparam noteBackgroundColor #FFF7ED
+skinparam noteBorderColor #D97706
+skinparam dpi 140
+title Матрица трассировки: BR -> FR -> UI -> тест -> коммит
 usecase "BR-1: рост конверсии\nв запись через промокоды" as BR #LightBlue
 usecase "FR-12: применение промокода\nпри подтверждении брони" as FR #LightGreen
 usecase "UI-7: экран корзины,\nполе «Промокод»" as UI #LightYellow

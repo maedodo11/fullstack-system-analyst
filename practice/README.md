@@ -18,3 +18,7 @@
 | 12 | Спецификация витрины star-schema | 11 | [solution](solutions/sol12_star_schema.md) |
 
 Тексты заданий — в [tasks.md](tasks.md).
+
+## Перед чтением решения
+
+Сначала запишите допущения и ожидаемый результат, выполните задание, затем откройте solution. [Запускаемая SQL-практика](../examples/sql/README.md) подходит для первого упражнения; [пример оплаты](../examples/payment/README.md) связывает задачи в один согласованный пакет. Синтаксис FILTER/date_trunc/INCLUDE в старших SQL-решениях относится к PostgreSQL, а не к MySQL.

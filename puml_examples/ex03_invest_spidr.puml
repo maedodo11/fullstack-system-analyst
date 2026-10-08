@@ -1,17 +1,34 @@
 @startuml ex03_invest_spidr
-!pragma layout smetana
-title Декомпозиция user story: INVEST как чеклист, SPIDR как приём
 skinparam defaultFontName "DejaVu Sans"
-usecase "Эпик: «Онлайн-запись к врачу»" as EPIC #LightBlue
-usecase "Story: выбрать specialty\nи дату (S — small)" as A #LightGreen
-usecase "Story: записаться\n(Paths: слот есть / нет)" as B #LightGreen
-usecase "Story: отменить запись\n(Repeat: повторная запись)" as C #LightGreen
-usecase "Story: напоминание SMS\n(Resources: SMS vs push)" as D #LightGreen
-EPIC --> A
-EPIC --> B
-EPIC --> C
-EPIC --> D
-legend right
-SPIDR: **S**imple | **P**aths | **I**terative | **D**ivisible | **R**epeatable
+skinparam defaultFontSize 14
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam ArrowColor #334155
+skinparam titleFontColor #0F172A
+skinparam titleFontSize 20
+skinparam noteBackgroundColor #FFF7ED
+skinparam noteBorderColor #D97706
+skinparam dpi 140
+title SPIDR: полные пользовательские истории
+rectangle "Онлайн-запись: от выбора до подтверждения" as E
+rectangle "S — Spike\nПроверить контракт расписания\nРезультат: знание, не фича" as S
+rectangle "P — Paths\nСвободный слот / лист ожидания" as P
+rectangle "I — Interfaces\nПолный сценарий веб / mobile" as I
+rectangle "D — Data\nОдна клиника / несколько клиник" as D
+rectangle "R — Rules\nОбычная запись / по направлению" as R
+E -down-> S
+E -down-> P
+E -down-> I
+E -down-> D
+E -down-> R
+S -[hidden]down-> P
+P -[hidden]down-> I
+I -[hidden]down-> D
+D -[hidden]down-> R
+legend bottom
+INVEST проверяет качество истории; SPIDR помогает её разделить.
+UI + API + данные внутри каждого пользовательского среза.
+Обязательные правила безопасности и целостности не откладываем.
 endlegend
 @enduml

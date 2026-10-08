@@ -1,7 +1,16 @@
 @startuml m3_06_kafka_compatibility
-title Эволюция события PaymentSucceeded: совместимость версий через Schema Registry
-!pragma layout smetana
 skinparam defaultFontName "DejaVu Sans"
+skinparam defaultFontSize 14
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam ArrowColor #334155
+skinparam titleFontColor #0F172A
+skinparam titleFontSize 20
+skinparam noteBackgroundColor #FFF7ED
+skinparam noteBorderColor #D97706
+skinparam dpi 140
+title Эволюция события PaymentSucceeded: совместимость версий через Schema Registry
 rectangle "v1 (сегодня)\n{txn_id, amount, currency}" as V1 #LightBlue
 rectangle "v2 (завтра)\n+ fee_amount (nullable, field#4)" as V2 #LightGreen
 rectangle "v3 (запрещено!)\namount → total_amount_minor_units\nrename/type change" as V3 #Salmon

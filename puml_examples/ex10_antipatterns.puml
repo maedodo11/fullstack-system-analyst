@@ -1,7 +1,16 @@
 @startuml ex10_antipatterns
-!pragma layout smetana
-title Антипаттерны требований и как их чинить
 skinparam defaultFontName "DejaVu Sans"
+skinparam defaultFontSize 14
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam ArrowColor #334155
+skinparam titleFontColor #0F172A
+skinparam titleFontSize 20
+skinparam noteBackgroundColor #FFF7ED
+skinparam noteBorderColor #D97706
+skinparam dpi 140
+title Антипаттерны требований и как их чинить
 rectangle "**Требование-решение**\nбыло: «Сделать выпадающий список»\nстало: «Пользователь выбирает врача из списка доступных»" as M1 #Salmon
 rectangle "**Неизмеримая NFR**\nбыло: «должно быть быстро»\nстало: P95 <= 300 мс при 500 RPS" as M2 #Salmon
 rectangle "**Golden hammer**\nбыло: «всё на микросервисах»\nстало: ADR — стиль под NFR и размер команды" as M3 #Salmon
